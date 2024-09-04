@@ -25,7 +25,7 @@ const fetchDataPengumuman = async (page = 1) => {
     }
 };
 
-// Pencarian Pengumuman
+// Pencarian Pengumuman Allan
 const filteredPengumuman = computed(() => {
     if (!searchQuery.value) {
         return pengumuman.value;
