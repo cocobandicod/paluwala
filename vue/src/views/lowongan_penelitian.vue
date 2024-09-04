@@ -138,9 +138,3 @@ const initializeDataTable = () => {
     <GlobalFooter />
     <!-- end footer -->
 </template>
-
-<script>
-export default {
-    name: "panduan",
-};
-</script>
