@@ -207,6 +207,14 @@ import GlobalHeader from "../components/operator_header.vue";
                                             Panduan
                                         </router-link>
                                     </li>
+                                    <li class="nav-item">
+                                        <router-link
+                                            :to="`/operator/pendukung/link`"
+                                            class="nav-link"
+                                        >
+                                            Link
+                                        </router-link>
+                                    </li>
                                 </ul>
                             </div>
                         </li>

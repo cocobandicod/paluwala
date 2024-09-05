@@ -42,7 +42,7 @@ const login = async () => {
                 window.location.reload();
             });
         } else {
-            errorMessage.value = "Hak akses tidak dikenali.";
+            errorMessage.value = "Login Gagal! username dan password salah";
         }
     } catch (error) {
         errorMessage.value = "Login Gagal! username dan password salah";

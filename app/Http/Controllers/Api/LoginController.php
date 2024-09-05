@@ -45,6 +45,6 @@ class LoginController extends Controller
         }
 
         // Return gagal
-        return response()->json(['message' => 'Kredensial tidak valid'], 401);
+        return response()->json(['message' => 'Username dan Password Salah']);
     }
 }
