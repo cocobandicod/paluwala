@@ -36,7 +36,7 @@
                         <li class="nav-item">
                             <router-link
                                 type="button"
-                                :to="`/`"
+                                :to="{ name: 'home' }"
                                 class="nav-link"
                                 :class="{ active: isActive('/') }"
                             >
@@ -46,7 +46,7 @@
                         <li class="nav-item">
                             <router-link
                                 type="button"
-                                :to="`/panduan`"
+                                :to="{ name: 'panduan' }"
                                 class="nav-link"
                                 :class="{ active: isActive('/panduan') }"
                             >
@@ -56,7 +56,7 @@
                         <li class="nav-item">
                             <router-link
                                 type="button"
-                                :to="`/berita`"
+                                :to="{ name: 'berita' }"
                                 class="nav-link"
                                 :class="{ active: isActive('/berita') }"
                             >
@@ -66,7 +66,7 @@
                         <li class="nav-item">
                             <router-link
                                 type="button"
-                                :to="`/pengumuman`"
+                                :to="{ name: 'pengumuman' }"
                                 class="nav-link"
                                 :class="{ active: isActive('/pengumuman') }"
                             >
@@ -78,7 +78,7 @@
                     <div class="">
                         <router-link
                             type="button"
-                            :to="`/login`"
+                            :to="{ name: 'Login' }"
                             class="btn btn-success"
                         >
                             Login

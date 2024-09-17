@@ -1,5 +1,20 @@
 <script setup>
+import { ref, onMounted } from "vue";
+import api from "../api";
 import { thnsekarang } from "../utils/globalFunctions";
+const link = ref([]);
+const fetchDataLink = async () => {
+    try {
+        const response = await api.get("/api/link");
+        link.value = response.data.data.data;
+    } catch (error) {
+        console.error("Error fetching link data:", error);
+    }
+};
+
+onMounted(() => {
+    fetchDataLink();
+});
 </script>
 <template>
     <!-- Start footer -->
@@ -60,25 +75,13 @@ import { thnsekarang } from "../utils/globalFunctions";
                                 <ul
                                     class="list-unstyled ff-secondary footer-list"
                                 >
-                                    <li>
-                                        <a href="https://ung.ac.id"
-                                            >Universitas Negeri Gorontalo</a
-                                        >
-                                    </li>
-                                    <li>
-                                        <a href="https://lppm.ung.ac.id"
-                                            >LPPM</a
-                                        >
-                                    </li>
-                                    <li>
-                                        <a href="https://siat.ung.ac.id"
-                                            >SIAT</a
-                                        >
-                                    </li>
-                                    <li>
-                                        <a href="https://simlit.ung.ac.id"
-                                            >SIMLIT</a
-                                        >
+                                    <li
+                                        v-for="(link, index) in link"
+                                        :key="index"
+                                    >
+                                        <a :href="link.link" target="_blank">{{
+                                            link.judul
+                                        }}</a>
                                     </li>
                                 </ul>
                             </div>

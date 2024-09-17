@@ -1,9 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import api from "../api";
-// Import LowonganPenelitianModal
-import LowonganPenelitianModal from "../components/LowonganPenelitianModal.vue";
-import LowonganPengabdianModal from "../components/LowonganPengabdianModal.vue";
 import GlobalFooter from "../components/footer.vue";
 
 const sponsor = ref([]);
@@ -75,20 +72,23 @@ onMounted(() => {
 
                         <div class="d-flex gap-2 justify-content-center mt-5">
                             <router-link
-                                :to="`/lowongan-penelitian`"
+                                :to="{ name: 'LowonganPenelitian' }"
                                 class="btn btn-danger"
                             >
                                 Lowongan Penelitian
                                 <i class="ri-eye-line align-middle ms-1"></i>
                             </router-link>
-                            <router-link :to="`/login`" class="btn btn-info">
+                            <router-link
+                                :to="{ name: 'Login' }"
+                                class="btn btn-info"
+                            >
                                 Ajukan Proposal
                                 <i
                                     class="ri-arrow-right-line align-middle ms-1"
                                 ></i>
                             </router-link>
                             <router-link
-                                :to="`/lowongan-pengabdian`"
+                                :to="{ name: 'LowonganPengabdian' }"
                                 class="btn btn-warning"
                             >
                                 Lowongan Pengabdian
@@ -192,7 +192,12 @@ onMounted(() => {
                             <div class="d-flex align-items-center pt-3">
                                 <div class="flex-grow-1">
                                     <router-link
-                                        :to="`/berita/${berita.judul_seo}`"
+                                        :to="{
+                                            name: 'BeritaDetail',
+                                            params: {
+                                                slug: berita.judul_seo,
+                                            },
+                                        }"
                                         class="text-decoration-none"
                                     >
                                         <h4 class="mb-1 fw-semibold">
@@ -203,7 +208,10 @@ onMounted(() => {
                                         <i
                                             class="ri-calendar-todo-fill me-1"
                                         ></i>
-                                        {{ formatTanggal(berita.tgl_berita) }}
+                                        {{
+                                            formatTanggalsaja(berita.tgl_berita)
+                                        }}
+                                        {{ berita.jam_berita }}
                                         <i
                                             class="ri-account-circle-line ms-2 me-1"
                                         ></i>
@@ -217,7 +225,12 @@ onMounted(() => {
                             <div>
                                 <div class="mt-4">
                                     <router-link
-                                        :to="`/berita/${berita.judul_seo}`"
+                                        :to="{
+                                            name: 'BeritaDetail',
+                                            params: {
+                                                slug: berita.judul_seo,
+                                            },
+                                        }"
                                         class="btn btn-soft-success w-100"
                                     >
                                         Read More
@@ -232,7 +245,7 @@ onMounted(() => {
                 <div class="hstack gap-2 justify-content-center">
                     <router-link
                         type="button"
-                        :to="`berita`"
+                        :to="{ name: 'berita' }"
                         class="btn btn-success btn-label rounded-pill"
                     >
                         <i
@@ -302,7 +315,7 @@ onMounted(() => {
                                             class="ri-calendar-todo-fill me-1"
                                         ></i>
                                         {{
-                                            formatTanggal(
+                                            formatTanggalsaja(
                                                 pengumuman.tgl_pengumuman
                                             )
                                         }}
@@ -354,7 +367,7 @@ onMounted(() => {
                 <div class="hstack gap-2 justify-content-center">
                     <router-link
                         type="button"
-                        :to="`pengumuman`"
+                        :to="{ name: 'pengumuman' }"
                         class="btn btn-success btn-label rounded-pill"
                     >
                         <i
@@ -477,13 +490,15 @@ onMounted(() => {
     <!-- end footer -->
 
     <!-- Include the Modal Component -->
-    <LowonganPenelitianModal />
-    <LowonganPengabdianModal />
 </template>
 <script>
 // Import Swiper Vue.js components
 import { Swiper, SwiperSlide } from "swiper/vue";
-import { formatTanggal, truncateText } from "../utils/globalFunctions";
+import {
+    formatTanggal,
+    formatTanggalsaja,
+    truncateText,
+} from "../utils/globalFunctions";
 
 // Import Swiper styles
 import "swiper/css";

@@ -5,7 +5,6 @@ import Pengumuman from '../views/pengumuman.vue';
 import LowonganPenelitian from '../views/lowongan_penelitian.vue';
 import LowonganPengabdian from '../views/lowongan_pengabdian.vue';
 import BeritaDetail from '../views/berita_detail.vue';
-import NotFound from '../components/NotFound.vue';
 import Login from '../components/login.vue';
 import Register from '../components/register.vue';
 import Logout from '../components/operator_header.vue';
@@ -71,11 +70,4 @@ export default [
     component: Logout,
     meta: { title: 'Logout | Paluwala LPPM Universitas Negeri Gorontalo' }
   },
-  // Error Page
-  {
-    path: '/:pathMatch(.*)*',
-    name: 'NotFound',
-    component: NotFound,
-    meta: { title: '404 Halaman Tidak Ditemukan' }
-  }
 ];

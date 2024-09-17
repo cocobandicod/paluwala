@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import api from "../api";
-import { formatTanggal, truncateText } from "../utils/globalFunctions";
+import { formatTanggalsaja, truncateText } from "../utils/globalFunctions";
 import GlobalFooter from "../components/footer.vue";
 
 const berita = ref([]);
@@ -111,7 +111,12 @@ const goToPrevPage = () => {
                             </div>
                             <div class="col-lg-8">
                                 <router-link
-                                    :to="`/berita/${item.judul_seo}`"
+                                    :to="{
+                                        name: 'BeritaDetail',
+                                        params: {
+                                            slug: item.judul_seo,
+                                        },
+                                    }"
                                     class="text-decoration-none"
                                 >
                                     <h5 class="fs-18">
@@ -120,7 +125,8 @@ const goToPrevPage = () => {
                                 </router-link>
                                 <p class="text-muted fs-13 mb-0 mt-2">
                                     <i class="ri-calendar-todo-fill me-1"></i>
-                                    {{ formatTanggal(item.tgl_berita) }}
+                                    {{ formatTanggalsaja(item.tgl_berita) }}
+                                    {{ item.jam_berita }}
                                     <i
                                         class="ri-account-circle-line ms-2 me-1"
                                     ></i>
@@ -132,7 +138,12 @@ const goToPrevPage = () => {
 
                                 <div>
                                     <router-link
-                                        :to="`/berita/${item.judul_seo}`"
+                                        :to="{
+                                            name: 'BeritaDetail',
+                                            params: {
+                                                slug: item.judul_seo,
+                                            },
+                                        }"
                                         class="text-decoration-none"
                                     >
                                         <span class="fs-13 fw-medium">

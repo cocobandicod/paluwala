@@ -56,7 +56,7 @@
                                     class="card-header align-items-center d-flex"
                                 >
                                     <h4 class="card-title mb-0 flex-grow-1">
-                                        Usulan Baru OPT PT
+                                        Monitoring Usulan
                                     </h4>
                                 </div>
                                 <!-- end card header -->

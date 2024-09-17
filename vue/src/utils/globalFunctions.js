@@ -2,6 +2,7 @@
 import { format, isValid, parseISO } from 'date-fns';
 import { id } from "date-fns/locale";
 import Toastify from 'toastify-js';
+import Swal from 'sweetalert2';
 import "toastify-js/src/toastify.css";
 
 export function formatTanggal(tanggal) {
@@ -72,3 +73,25 @@ export function showToast(message, backgroundColor = "#4fbe87", duration = 3000,
         },
     }).showToast();
 }
+
+export const showAlert = (title, text, icon = 'info', confirmButtonText = 'OK') => {
+    return Swal.fire({
+      title: title,
+      text: text,
+      icon: icon,
+      confirmButtonText: confirmButtonText,
+    });
+};
+
+export const confirmDelete = async (title = 'Apakah kamu yakin?', text = 'Data ini akan dihapus!') => {
+    return Swal.fire({
+      title: title,
+      text: text,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#f06548',
+      cancelButtonColor: '#405189',
+      confirmButtonText: 'Hapus',
+      cancelButtonText: 'Batal',
+    });
+  };

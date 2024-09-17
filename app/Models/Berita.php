@@ -23,6 +23,7 @@ class Berita extends Model
         'judul_berita',
         'judul_seo',
         'tgl_berita',
+        'jam_berita',
         'isi_berita',
         'image',
     ];
@@ -48,7 +49,7 @@ class Berita extends Model
     protected function image(): Attribute
     {
         return Attribute::make(
-            get: fn ($image) => url('/storage/berita/' . $image),
+            get: fn($image) => url('/storage/berita/' . $image),
         );
     }
 }

@@ -45,11 +45,11 @@ const initializeDataTable = () => {
                 {
                     className: "text-center p-2",
                     width: "10%",
-                    targets: [2],
+                    targets: [3],
                 },
                 {
                     className: "p-2",
-                    targets: [0, 1, 2],
+                    targets: [0, 1, 2, 3],
                 },
             ],
             language: {
@@ -101,7 +101,7 @@ const delete_tautan = async (id, nama) => {
                                     class="card-header align-items-center d-flex"
                                 >
                                     <h4 class="card-title mb-0 flex-grow-1">
-                                        Perbaikan Usulan
+                                        Catatan Harian
                                     </h4>
                                 </div>
                                 <!-- end card header -->
@@ -189,7 +189,8 @@ const delete_tautan = async (id, nama) => {
                                                     <thead class="table-light">
                                                         <tr>
                                                             <th>No</th>
-                                                            <th>Usulan</th>
+                                                            <th>Nama Skema</th>
+                                                            <th>Jumlah</th>
                                                             <th>Action</th>
                                                         </tr>
                                                     </thead>
@@ -203,133 +204,8 @@ const delete_tautan = async (id, nama) => {
                                                             <td>
                                                                 {{ index + 1 }}
                                                             </td>
-                                                            <td>
-                                                                <div
-                                                                    class="d-flex mb-0"
-                                                                >
-                                                                    <div
-                                                                        class="flex-grow-1"
-                                                                    >
-                                                                        <p
-                                                                            class="text-truncate mb-0 fs-13"
-                                                                        >
-                                                                            <i
-                                                                                class="mdi mdi-circle align-middle text-primary me-2"
-                                                                            ></i
-                                                                            ><b
-                                                                                >Pengembangan
-                                                                                Alat
-                                                                                Bantu
-                                                                                Ergonomis
-                                                                                Untuk
-                                                                                Perempuan
-                                                                                Pengrajin
-                                                                                Karawo
-                                                                            </b>
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                                <div
-                                                                    class="d-flex mb-0"
-                                                                >
-                                                                    <div
-                                                                        class="flex-grow-1"
-                                                                    >
-                                                                        <p
-                                                                            class="text-success-emphasis mb-0"
-                                                                        >
-                                                                            Skema
-                                                                            Penelitian
-                                                                            Fundamental
-                                                                            -
-                                                                            Reguler
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                                <div
-                                                                    class="d-flex mb-0"
-                                                                >
-                                                                    <div
-                                                                        class="flex-grow-1"
-                                                                    >
-                                                                        Ketua :
-                                                                    </div>
-                                                                </div>
-                                                                <div
-                                                                    class="d-flex mb-0"
-                                                                >
-                                                                    <div
-                                                                        class="flex-grow-1"
-                                                                    >
-                                                                        Tahun
-                                                                        Pelaksanaan
-                                                                        :
-                                                                    </div>
-                                                                </div>
-                                                                <div
-                                                                    class="d-flex mb-0"
-                                                                >
-                                                                    <div
-                                                                        class="flex-grow-1"
-                                                                    >
-                                                                        Bidang
-                                                                        Fokus :
-                                                                    </div>
-                                                                </div>
-                                                                <div
-                                                                    class="d-flex mb-0"
-                                                                >
-                                                                    <div
-                                                                        class="flex-grow-1"
-                                                                    >
-                                                                        Jumlah
-                                                                        Anggota
-                                                                        :
-                                                                    </div>
-                                                                </div>
-                                                                <div
-                                                                    class="d-flex mb-0"
-                                                                >
-                                                                    <div
-                                                                        class="flex-grow-1"
-                                                                    >
-                                                                        Lama
-                                                                        Kegiatan
-                                                                        :
-                                                                    </div>
-                                                                </div>
-                                                                <div
-                                                                    class="d-flex mb-0"
-                                                                >
-                                                                    <div
-                                                                        class="flex-grow-1"
-                                                                    >
-                                                                        Tanggal
-                                                                        Perbaikan
-                                                                        :
-                                                                    </div>
-                                                                </div>
-                                                                <div
-                                                                    class="d-flex mb-0"
-                                                                >
-                                                                    <div
-                                                                        class="flex-grow-1"
-                                                                    >
-                                                                        Dana
-                                                                        Disetujui
-                                                                        :
-                                                                        <b
-                                                                            class="text-success-emphasis"
-                                                                            >Rp.
-                                                                            100.000.000
-                                                                        </b>
-                                                                    </div>
-                                                                </div>
-                                                                <span
-                                                                    class="badge rounded-pill bg-success fs-11"
-                                                                    >Submitted</span
-                                                                >
-                                                            </td>
+                                                            <td></td>
+                                                            <td></td>
                                                             <td>
                                                                 <router-link
                                                                     type="button"

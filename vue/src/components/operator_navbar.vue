@@ -6,49 +6,6 @@ import GlobalHeader from "../components/operator_header.vue";
     <div>
         <div class="app-menu navbar-menu">
             <!-- LOGO -->
-            <div class="navbar-brand-box">
-                <!-- Dark Logo-->
-                <a href="index-2.html" class="logo logo-dark">
-                    <span class="logo-sm">
-                        <img
-                            src="/src/assets/images/logo-sm.png"
-                            alt=""
-                            height="25"
-                        />
-                    </span>
-                    <span class="logo-lg">
-                        <img
-                            src="/src/assets/images/logo-dark.png"
-                            alt=""
-                            height="25"
-                        />
-                    </span>
-                </a>
-                <!-- Light Logo-->
-                <a href="index-2.html" class="logo logo-light">
-                    <span class="logo-sm">
-                        <img
-                            src="/src/assets/images/logo-sm.png"
-                            alt=""
-                            height="25"
-                        />
-                    </span>
-                    <span class="logo-lg">
-                        <img
-                            src="/src/assets/images/logo-light.png"
-                            alt=""
-                            height="25"
-                        />
-                    </span>
-                </a>
-                <button
-                    type="button"
-                    class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"
-                    id="vertical-hover"
-                >
-                    <i class="ri-record-circle-line"></i>
-                </button>
-            </div>
 
             <div id="scrollbar">
                 <div class="container-fluid">
@@ -57,8 +14,9 @@ import GlobalHeader from "../components/operator_header.vue";
                             <span data-key="t-menu">Menu</span>
                         </li>
                         <li class="nav-item">
-                            <span
-                                class="nav-link menu-link"
+                            <a
+                                class="nav-link menu-link collapsed"
+                                href="#sidebarDashboards"
                                 data-bs-toggle="collapse"
                                 role="button"
                                 aria-expanded="false"
@@ -66,15 +24,18 @@ import GlobalHeader from "../components/operator_header.vue";
                             >
                                 <i class="ri-home-smile-line"></i>
                                 <span data-key="t-dashboards">Dashboards</span>
-                            </span>
+                            </a>
                             <div
-                                class="collapse menu-dropdown"
+                                class="menu-dropdown collapse"
                                 id="sidebarDashboards"
+                                style=""
                             >
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
                                         <router-link
-                                            :to="`/operator/dashboard`"
+                                            :to="{
+                                                name: 'OperatorDashboard',
+                                            }"
                                             class="nav-link"
                                         >
                                             Operator
@@ -82,7 +43,9 @@ import GlobalHeader from "../components/operator_header.vue";
                                     </li>
                                     <li class="nav-item">
                                         <router-link
-                                            :to="`/pengusul/dashboard`"
+                                            :to="{
+                                                name: 'PengusulDashboard',
+                                            }"
                                             class="nav-link"
                                         >
                                             Pengusul
@@ -93,24 +56,28 @@ import GlobalHeader from "../components/operator_header.vue";
                         </li>
                         <!-- end Dashboard Menu -->
                         <li class="nav-item">
-                            <span
-                                class="nav-link menu-link"
+                            <a
+                                class="nav-link menu-link collapsed"
+                                href="#sidebarApps"
                                 data-bs-toggle="collapse"
                                 role="button"
                                 aria-expanded="false"
-                                aria-controls="sidebarLanding"
+                                aria-controls="sidebarApps"
                             >
                                 <i class="ri-rocket-line"></i>
-                                <span data-key="t-landing">Monitoring</span>
-                            </span>
+                                <span data-key="t-apps">Monitoring</span>
+                            </a>
                             <div
-                                class="collapse menu-dropdown"
-                                id="sidebarLanding"
+                                class="menu-dropdown collapse"
+                                id="sidebarApps"
+                                style=""
                             >
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
                                         <router-link
-                                            :to="`/operator/monitoring/perbaikan-usulan`"
+                                            :to="{
+                                                name: 'OperatorPerbaikanUsulan',
+                                            }"
                                             class="nav-link"
                                         >
                                             Perbaikan Usulan
@@ -118,7 +85,9 @@ import GlobalHeader from "../components/operator_header.vue";
                                     </li>
                                     <li class="nav-item">
                                         <router-link
-                                            :to="`/operator/monitoring/catatan-harian`"
+                                            :to="{
+                                                name: 'OperatorCatatanHarian',
+                                            }"
                                             class="nav-link"
                                         >
                                             Catatan Harian
@@ -126,7 +95,9 @@ import GlobalHeader from "../components/operator_header.vue";
                                     </li>
                                     <li class="nav-item">
                                         <router-link
-                                            :to="`/operator/monitoring/laporan-kemajuan`"
+                                            :to="{
+                                                name: 'OperatorLaporanKemajuan',
+                                            }"
                                             class="nav-link"
                                         >
                                             Laporan Kemajuan
@@ -134,7 +105,9 @@ import GlobalHeader from "../components/operator_header.vue";
                                     </li>
                                     <li class="nav-item">
                                         <router-link
-                                            :to="`/operator/monitoring/laporan-akhir`"
+                                            :to="{
+                                                name: 'OperatorLaporanAkhir',
+                                            }"
                                             class="nav-link"
                                         >
                                             Laporan Akhir
@@ -142,7 +115,9 @@ import GlobalHeader from "../components/operator_header.vue";
                                     </li>
                                     <li class="nav-item">
                                         <router-link
-                                            :to="`/operator/monitoring/monev-internal`"
+                                            :to="{
+                                                name: 'OperatorMonevInternal',
+                                            }"
                                             class="nav-link"
                                         >
                                             Monev Internal PT
@@ -151,25 +126,35 @@ import GlobalHeader from "../components/operator_header.vue";
                                 </ul>
                             </div>
                         </li>
+
                         <li class="nav-item">
-                            <span
-                                class="nav-link menu-link"
+                            <a
+                                class="nav-link menu-link collapsed"
+                                href="#sidebarLayouts"
                                 data-bs-toggle="collapse"
                                 role="button"
                                 aria-expanded="false"
-                                aria-controls="sidebarLanding"
+                                aria-controls="sidebarLayouts"
                             >
-                                <i class="ri-rocket-line"></i>
-                                <span data-key="t-landing">Data Pendukung</span>
-                            </span>
+                                <i class="ri-server-line"></i>
+                                <span data-key="t-layouts">Data Pendukung</span>
+                                <span
+                                    class="badge badge-pill bg-danger"
+                                    data-key="t-hot"
+                                    >Hot</span
+                                >
+                            </a>
                             <div
-                                class="collapse menu-dropdown"
-                                id="sidebarLanding"
+                                class="menu-dropdown collapse"
+                                id="sidebarLayouts"
+                                style=""
                             >
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
                                         <router-link
-                                            :to="`/operator/pendukung/profil-lembaga`"
+                                            :to="{
+                                                name: 'OperatorProfilLembaga',
+                                            }"
                                             class="nav-link"
                                         >
                                             Profil Lembaga / Pimpinan
@@ -177,7 +162,9 @@ import GlobalHeader from "../components/operator_header.vue";
                                     </li>
                                     <li class="nav-item">
                                         <router-link
-                                            :to="`/operator/pendukung/rab`"
+                                            :to="{
+                                                name: 'OperatorRab',
+                                            }"
                                             class="nav-link"
                                         >
                                             Rencana Anggaran Biaya
@@ -185,7 +172,9 @@ import GlobalHeader from "../components/operator_header.vue";
                                     </li>
                                     <li class="nav-item">
                                         <router-link
-                                            :to="`/operator/pendukung/berita`"
+                                            :to="{
+                                                name: 'OperatorBerita',
+                                            }"
                                             class="nav-link"
                                         >
                                             Berita
@@ -193,7 +182,9 @@ import GlobalHeader from "../components/operator_header.vue";
                                     </li>
                                     <li class="nav-item">
                                         <router-link
-                                            :to="`/operator/pendukung/pengumuman`"
+                                            :to="{
+                                                name: 'OperatorPengumuman',
+                                            }"
                                             class="nav-link"
                                         >
                                             Pengumuman
@@ -201,7 +192,9 @@ import GlobalHeader from "../components/operator_header.vue";
                                     </li>
                                     <li class="nav-item">
                                         <router-link
-                                            :to="`/operator/pendukung/panduan`"
+                                            :to="{
+                                                name: 'OperatorPanduan',
+                                            }"
                                             class="nav-link"
                                         >
                                             Panduan
@@ -209,36 +202,53 @@ import GlobalHeader from "../components/operator_header.vue";
                                     </li>
                                     <li class="nav-item">
                                         <router-link
-                                            :to="`/operator/pendukung/link`"
+                                            :to="{
+                                                name: 'OperatorTautan',
+                                            }"
                                             class="nav-link"
                                         >
-                                            Link
+                                            Tautan
+                                        </router-link>
+                                    </li>
+                                    <li class="nav-item">
+                                        <router-link
+                                            :to="{
+                                                name: 'OperatorSponsor',
+                                            }"
+                                            class="nav-link"
+                                        >
+                                            Sponsor
                                         </router-link>
                                     </li>
                                 </ul>
                             </div>
                         </li>
+                        <!-- end Dashboard Menu -->
+
                         <li class="nav-item">
-                            <span
-                                class="nav-link menu-link"
+                            <a
+                                class="nav-link menu-link collapsed"
+                                href="#sidebarAuth"
                                 data-bs-toggle="collapse"
                                 role="button"
                                 aria-expanded="false"
-                                aria-controls="sidebarLanding"
+                                aria-controls="sidebarAuth"
                             >
-                                <i class="ri-rocket-line"></i>
-                                <span data-key="t-landing"
-                                    >Pengelolaan Reviewer
-                                </span>
-                            </span>
+                                <i class="ri-account-circle-line"></i>
+                                <span data-key="t-authentication"
+                                    >Pengelolaan Review</span
+                                >
+                            </a>
                             <div
                                 class="collapse menu-dropdown"
-                                id="sidebarLanding"
+                                id="sidebarAuth"
                             >
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
                                         <router-link
-                                            :to="`/operator/reviewer/borang-penilaian`"
+                                            :to="{
+                                                name: 'OperatorBorangPenilaian',
+                                            }"
                                             class="nav-link"
                                         >
                                             Borang Penilaian
@@ -246,7 +256,9 @@ import GlobalHeader from "../components/operator_header.vue";
                                     </li>
                                     <li class="nav-item">
                                         <router-link
-                                            :to="`/operator/reviewer/daftar-reviewer`"
+                                            :to="{
+                                                name: 'OperatorDaftarReviewer',
+                                            }"
                                             class="nav-link"
                                         >
                                             Daftar Reviewer
@@ -254,7 +266,9 @@ import GlobalHeader from "../components/operator_header.vue";
                                     </li>
                                     <li class="nav-item">
                                         <router-link
-                                            :to="`/operator/reviewer/reviewer-external`"
+                                            :to="{
+                                                name: 'OperatorReviewerExternal',
+                                            }"
                                             class="nav-link"
                                         >
                                             Reviewer External
@@ -262,7 +276,9 @@ import GlobalHeader from "../components/operator_header.vue";
                                     </li>
                                     <li class="nav-item">
                                         <router-link
-                                            :to="`/operator/reviewer/penugasan-reviewer`"
+                                            :to="{
+                                                name: 'OperatorPenugasanReview',
+                                            }"
                                             class="nav-link"
                                         >
                                             Penugasan Reviewer
@@ -270,7 +286,9 @@ import GlobalHeader from "../components/operator_header.vue";
                                     </li>
                                     <li class="nav-item">
                                         <router-link
-                                            :to="`/operator/reviewer/ploting-reviewer`"
+                                            :to="{
+                                                name: 'OperatorPlotingReviewer',
+                                            }"
                                             class="nav-link"
                                         >
                                             Ploting Reviewer
@@ -278,7 +296,9 @@ import GlobalHeader from "../components/operator_header.vue";
                                     </li>
                                     <li class="nav-item">
                                         <router-link
-                                            :to="`/operator/reviewer/monitoring-penilaian`"
+                                            :to="{
+                                                name: 'OperatorMonitoringPenilaian',
+                                            }"
                                             class="nav-link"
                                         >
                                             Monitoring Penilaian
@@ -287,20 +307,6 @@ import GlobalHeader from "../components/operator_header.vue";
                                 </ul>
                             </div>
                         </li>
-                        <!--
-                        <li class="nav-item">
-                            <router-link class="nav-link menu-link pe-0">
-                                <i class="ri-honour-line"></i
-                                ><span data-key="t-widgets">Penelitian</span>
-                            </router-link>
-                        </li>
-                        <li class="nav-item">
-                            <router-link class="nav-link menu-link pe-0">
-                                <i class="ri-honour-line"></i
-                                ><span data-key="t-widgets">Pengabdian</span>
-                            </router-link>
-                        </li>
-                        -->
                     </ul>
                 </div>
                 <!-- Sidebar -->

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import api from "../api";
-import { formatTanggal } from "../utils/globalFunctions";
+import { formatTanggalsaja } from "../utils/globalFunctions";
 import GlobalFooter from "../components/footer.vue";
 
 const pengumuman = ref([]);
@@ -132,7 +132,7 @@ const goToPrevPage = () => {
                                                 class="ri-calendar-todo-fill me-1"
                                             ></i>
                                             {{
-                                                formatTanggal(
+                                                formatTanggalsaja(
                                                     pengumuman.tgl_pengumuman
                                                 )
                                             }}

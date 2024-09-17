@@ -2,11 +2,20 @@ import { createRouter, createWebHistory } from 'vue-router';
 import homeRoutes from './home';
 import pengusulRoutes from './pengusul';
 import operatorRoutes from './operator';
+import NotFound from '../components/NotFound.vue';
 
 const routes = [
   ...homeRoutes,
   ...pengusulRoutes,
   ...operatorRoutes,
+  {
+    path: '/:pathMatch(.*)*', // Catch-all untuk rute yang tidak cocok
+    name: 'NotFound',
+    component: NotFound,
+    meta: {
+      title: '404 - Halaman Tidak Ditemukan',
+    },
+  },
 ];
 
 const router = createRouter({

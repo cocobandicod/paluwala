@@ -58,12 +58,12 @@ class ProfilPengusulController extends Controller
             'alamat_surel' => 'required',
             'website_personal' => 'required',
         ]);
-        
+
         //check if validation fails
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
-        
+
         //find post by ID
         $profilPengusul = ProfilPengusul::find($id);
 

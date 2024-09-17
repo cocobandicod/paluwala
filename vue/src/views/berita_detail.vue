@@ -2,7 +2,7 @@
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import api from "../api";
-import { formatTanggal, truncateText } from "../utils/globalFunctions";
+import { formatTanggalsaja, truncateText } from "../utils/globalFunctions";
 import GlobalFooter from "../components/footer.vue";
 
 const route = useRoute();
@@ -67,7 +67,8 @@ onMounted(() => {
                                 <h2>{{ berita.judul_berita }}</h2>
                                 <p class="text-muted fs-13 mb-0 mt-2">
                                     <i class="ri-calendar-todo-fill me-1"></i>
-                                    {{ formatTanggal(berita.tgl_berita) }}
+                                    {{ formatTanggalsaja(berita.tgl_berita) }}
+                                    {{ berita.jam_berita }}
                                     <i
                                         class="ri-account-circle-line ms-2 me-1"
                                     ></i>
