@@ -153,7 +153,7 @@ const goToPrevPage = () => {
                                 <div
                                     class="accordion-body ff-secondary text-black"
                                 >
-                                    {{ pengumuman.isi_pengumuman }}
+                                    <p v-html="pengumuman.isi_pengumuman"></p>
                                     <div class="col-lg-12 pt-2 text-muted">
                                         <div
                                             v-if="
@@ -175,9 +175,6 @@ const goToPrevPage = () => {
                                                 ></i>
                                                 Unduh Dokumen
                                             </a>
-                                        </div>
-                                        <div v-else>
-                                            <p>Dokumen tidak tersedia.</p>
                                         </div>
                                     </div>
                                 </div>

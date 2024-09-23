@@ -15,18 +15,30 @@
                                     </h4>
                                 </div>
                                 <div class="card-body">
+                                    <!-- Success Alert -->
                                     <div
-                                        class="alert alert-success alert-dismissible alert-label-icon rounded-label fade show"
+                                        class="alert alert-success alert-dismissible alert-additional fade show"
                                         role="alert"
                                     >
-                                        <i
-                                            class="mdi mdi-file-pdf-box label-icon"
-                                        ></i>
-                                        <h5 class="mt-2 text-success">
-                                            Multi-Objective Coevolutionary
-                                            Optimization Method For Mutation
-                                            Testing
-                                        </h5>
+                                        <div class="alert-body">
+                                            <div class="d-flex">
+                                                <div class="flex-shrink-0 me-3">
+                                                    <i
+                                                        class="mdi mdi-file-pdf-box fs-16 align-middle"
+                                                    ></i>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <h5 class="alert-heading">
+                                                        Yey! Everything worked!
+                                                    </h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="alert-content">
+                                            <p class="mb-0">
+                                                Skema : Tahun Pelaksanaan :
+                                            </p>
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <div

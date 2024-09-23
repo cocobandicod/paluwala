@@ -26,6 +26,12 @@ class ProfilPengusulController extends Controller
             ->where('id_user', $id)
             ->first();
 
+        if (!$profilpengusul) {
+            return response()->json([
+                'message' => 'Data tidak ditemukan'
+            ], 404); // Return 404 error if berita not found
+        }
+
         //return single post as a resource
         return new PostResource(true, 'Sukses', $profilpengusul);
     }
@@ -36,6 +42,12 @@ class ProfilPengusulController extends Controller
         $profilpengusul = ProfilPengusul::with('user', 'institusi')
             ->where('id_user', $id)
             ->first();
+
+        if (!$profilpengusul) {
+            return response()->json([
+                'message' => 'Data tidak ditemukan'
+            ], 404); // Return 404 error if berita not found
+        }
 
         //return single post as a resource
         return new PostResource(true, 'Sukses', $profilpengusul);

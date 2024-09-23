@@ -8,34 +8,14 @@ const berita = ref([]);
 const pengumuman = ref([]);
 const isLoading = ref(true);
 
-const fetchDataSponsor = async () => {
+const fetchDataHome = async () => {
     try {
-        const response = await api.get("/api/sponsor");
-        sponsor.value = response.data.data.data;
+        const response = await api.get("/api/home");
+        sponsor.value = response.data.data.sponsor;
+        berita.value = response.data.data.berita;
+        pengumuman.value = response.data.data.pengumuman;
     } catch (error) {
         console.error("Error fetching sponsor data:", error);
-    } finally {
-        isLoading.value = false;
-    }
-};
-
-const fetchDataBerita = async () => {
-    try {
-        const response = await api.get("/api/berita");
-        berita.value = response.data.data.data;
-    } catch (error) {
-        console.error("Error fetching berita data:", error);
-    } finally {
-        isLoading.value = false;
-    }
-};
-
-const fetchDataPengumuman = async () => {
-    try {
-        const response = await api.get("/api/pengumuman");
-        pengumuman.value = response.data.data.data;
-    } catch (error) {
-        console.error("Error fetching pengumuman data:", error);
     } finally {
         isLoading.value = false;
     }
@@ -47,9 +27,7 @@ const isFileAvailable = (url) => {
 };
 
 onMounted(() => {
-    fetchDataSponsor();
-    fetchDataBerita();
-    fetchDataPengumuman();
+    fetchDataHome();
 });
 </script>
 <template>
@@ -131,12 +109,12 @@ onMounted(() => {
                             @slideChange="onSlideChange"
                         >
                             <swiper-slide
-                                v-for="(sponsor, index) in sponsor"
+                                v-for="(item, index) in sponsor"
                                 :key="index"
                             >
                                 <div class="client-images">
                                     <img
-                                        :src="sponsor.image"
+                                        :src="item.image"
                                         alt="client-img"
                                         class="mx-auto img-fluid d-block"
                                     />
@@ -220,7 +198,11 @@ onMounted(() => {
                                 </div>
                             </div>
                             <p class="pt-2 text-muted">
-                                {{ truncateText(berita.isi_berita, 120) }}
+                                {{
+                                    stripHtmlTags(
+                                        truncateText(berita.isi_berita, 120)
+                                    )
+                                }}
                             </p>
                             <div>
                                 <div class="mt-4">
@@ -334,7 +316,7 @@ onMounted(() => {
                             data-bs-parent="#genques-accordion"
                         >
                             <div class="accordion-body ff-secondary text-black">
-                                {{ pengumuman.isi_pengumuman }}
+                                <p v-html="pengumuman.isi_pengumuman"></p>
                                 <div
                                     class="col-lg-12 pt-2 text-muted"
                                     v-if="
@@ -354,9 +336,6 @@ onMounted(() => {
                                         ></i>
                                         Unduh Dokumen
                                     </a>
-                                </div>
-                                <div v-else class="text-muted pt-2">
-                                    <p>Dokumen tidak tersedia.</p>
                                 </div>
                             </div>
                         </div>
@@ -498,6 +477,7 @@ import {
     formatTanggal,
     formatTanggalsaja,
     truncateText,
+    stripHtmlTags,
 } from "../utils/globalFunctions";
 
 // Import Swiper styles

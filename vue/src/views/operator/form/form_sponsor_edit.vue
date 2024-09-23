@@ -1,14 +1,16 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { ref, watch, defineEmits } from "vue";
 import api from "../../../api";
-import { showToast, showAlert } from "../../../utils/globalFunctions";
-import Editor from "@tinymce/tinymce-vue";
+import { showToast } from "../../../utils/globalFunctions";
 
-const route = useRoute();
-const router = useRouter(); // Inisialisasi router
 const isLoading = ref(true);
 const btnloading = ref(false);
+const props = defineProps({
+    dataId: {
+        type: Number,
+        required: true,
+    },
+});
 
 const sponsor = ref({
     id: null,
@@ -16,9 +18,11 @@ const sponsor = ref({
     image: null,
 });
 
-const detail_sponsor = async () => {
+const detail_edit_sponsor = async () => {
+    if (!props.dataId) return; // Make sure id exists
     try {
-        const response = await api.get(`/api/sponsorform/${route.params.id}`);
+        isLoading.value = true;
+        const response = await api.get(`/api/sponsorform/${props.dataId}`);
         sponsor.value = response.data.data;
     } catch (error) {
         if (error.response && error.response.status === 404) {
@@ -34,6 +38,7 @@ const detail_sponsor = async () => {
 const allowedFormats = ["image/jpeg", "image/png"]; // Allowed formats
 const maxSize = 1 * 1024 * 1024; // 2MB in bytes
 
+const fileInput = ref(null);
 const selectedFileName = ref(null); // Nama file yang dipilih
 const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -63,6 +68,13 @@ const handleFileChange = (e) => {
     sponsor.value.image = file;
 };
 
+const clearFormInput = () => {
+    fileInput.value.value = null; // Clear file input by resetting its value
+    selectedFileName.value = null;
+};
+
+const emit = defineEmits(["refreshTabel"]);
+
 //method "UPDATE"
 const update_sponsor = async () => {
     btnloading.value = true;
@@ -73,15 +85,22 @@ const update_sponsor = async () => {
     }
     formData.append("_method", "PATCH");
     try {
-        await api.post(`/api/sponsorform/${route.params.id}`, formData);
+        await api.post(`/api/sponsorform/${props.dataId}`, formData);
         showToast("Data berhasil disimpan", "#4fbe87");
-        router.push({ name: "OperatorSponsor" });
+        emit("refreshTabel");
+
+        // Close modal (optional)
+        const modalElement = document.getElementById("FormSponsorEdit");
+        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+        if (modalInstance) {
+            modalInstance.hide();
+        }
     } catch (error) {
         console.error("Error updating data:", error);
         showToast("Gagal menyimpan data", "#ff6b6b");
-        document.querySelector('input[type="file"]').value = "";
     } finally {
         btnloading.value = false;
+        clearFormInput();
     }
 };
 
@@ -91,162 +110,120 @@ const isFileAvailable = (url) => {
     );
 };
 
-onMounted(() => {
-    detail_sponsor();
-});
+watch(
+    () => props.dataId,
+    (newId) => {
+        if (newId) {
+            detail_edit_sponsor(); // Load data whenever Id changes
+        }
+    }
+);
 </script>
 <template>
-    <div>
-        <div class="main-content">
-            <div class="page-content">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-xl-12">
-                            <div class="card card-height-100">
-                                <div
-                                    class="card-header align-items-center d-flex"
-                                >
-                                    <h4 class="card-title mb-0 flex-grow-1">
-                                        Ubah Sponsor
-                                    </h4>
-                                </div>
-                                <!-- end card header -->
-                                <div class="card-body">
-                                    <div
-                                        v-if="isLoading"
-                                        class="d-flex justify-content-center mt-4 mb-4"
-                                    >
-                                        <div
-                                            class="spinner-border"
-                                            role="status"
-                                        >
-                                            <span class="visually-hidden"
-                                                >Loading...</span
-                                            >
-                                        </div>
-                                    </div>
-                                    <div v-else>
-                                        <form
-                                            @submit.prevent="update_sponsor()"
-                                        >
-                                            <div class="row g-4">
-                                                <div class="col-lg-12">
-                                                    <div class="row mb-3">
-                                                        <div class="col-lg-2">
-                                                            <label
-                                                                for="nameInput"
-                                                                class="form-label"
-                                                                >Judul</label
-                                                            >
-                                                        </div>
-                                                        <div class="col-lg-10">
-                                                            <input
-                                                                type="text"
-                                                                class="form-control"
-                                                                v-model="
-                                                                    sponsor.judul
-                                                                "
-                                                                required
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-3">
-                                                        <div class="col-lg-2">
-                                                            <label
-                                                                class="form-label"
-                                                                >Gambar</label
-                                                            >
-                                                        </div>
-                                                        <div class="col-lg-4">
-                                                            <div
-                                                                v-if="
-                                                                    isFileAvailable(
-                                                                        sponsor.image
-                                                                    ) &&
-                                                                    !selectedFileName
-                                                                "
-                                                            >
-                                                                <img
-                                                                    class="img-thumbnail mb-2"
-                                                                    width="600"
-                                                                    :src="
-                                                                        sponsor.image
-                                                                    "
-                                                                />
-                                                            </div>
-                                                            <!-- Display the selected file name if a new file is chosen -->
-                                                            <div
-                                                                v-if="
-                                                                    selectedFileName
-                                                                "
-                                                                class="text-success-emphasis pt-0 pb-2"
-                                                            >
-                                                                File yang
-                                                                dipilih:
-                                                                {{
-                                                                    selectedFileName
-                                                                }}
-                                                            </div>
-                                                            <div
-                                                                v-else
-                                                                class="text-danger-emphasis pt-2 pb-2"
-                                                            >
-                                                                Silahkan upload
-                                                                kembali untuk
-                                                                merubah File
-                                                            </div>
-                                                            <!-- Input file -->
-                                                            <input
-                                                                type="file"
-                                                                class="form-control"
-                                                                @change="
-                                                                    handleFileChange
-                                                                "
-                                                            />
-                                                            <div
-                                                                class="form-text"
-                                                            >
-                                                                * Format JPG,
-                                                                PNG, dengan
-                                                                ukuran kurang 1
-                                                                Mb
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="text-start">
-                                                    <button
-                                                        type="submit"
-                                                        class="btn btn-success"
-                                                    >
-                                                        <span v-if="btnloading">
-                                                            <i
-                                                                class="mdi mdi-spin mdi-loading"
-                                                            ></i>
-                                                            Loading...
-                                                        </span>
-                                                        <span v-else>
-                                                            <i
-                                                                class="ri-save-line align-bottom me-1"
-                                                            ></i>
-                                                            Simpan
-                                                        </span>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                        <!--end col-->
-                                    </div>
-                                    <!--end row-->
-                                </div>
-                                <!-- end card body -->
-                            </div>
-                            <!-- end card -->
-                        </div>
-                        <!-- end col -->
-                    </div>
-                    <!-- end row -->
+    <div
+        class="modal fade zoomIn"
+        data-bs-backdrop="static"
+        id="FormSponsorEdit"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+        ref="modalRef"
+    >
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header p-3 bg-success-subtle">
+                    <h5 class="modal-title" id="createFolderModalLabel">
+                        Ubah Sponsor
+                    </h5>
                 </div>
+                <form @submit.prevent="update_sponsor()">
+                    <div class="modal-body">
+                        <div
+                            v-if="isLoading"
+                            class="d-flex justify-content-center mt-4 mb-4"
+                        >
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                        <div v-else>
+                            <div class="row">
+                                <div class="col-lg-12 mb-2">
+                                    <label class="form-label">Judul</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        v-model="sponsor.judul"
+                                        required
+                                    />
+                                </div>
+                                <div class="col-lg-12 mb-2">
+                                    <label for="nameInput" class="form-label"
+                                        >Upload Gambar</label
+                                    >
+                                    <div
+                                        v-if="
+                                            isFileAvailable(sponsor.image) &&
+                                            !selectedFileName
+                                        "
+                                    >
+                                        <img
+                                            class="img-thumbnail mb-2"
+                                            width="600"
+                                            :src="sponsor.image"
+                                        />
+                                    </div>
+                                    <!-- Display the selected file name if a new file is chosen -->
+                                    <div
+                                        v-if="selectedFileName"
+                                        class="text-success-emphasis pt-0 pb-2"
+                                    >
+                                        File yang dipilih:
+                                        {{ selectedFileName }}
+                                    </div>
+                                    <div
+                                        v-else
+                                        class="text-danger-emphasis pt-2 pb-2"
+                                    >
+                                        Silahkan upload kembali untuk merubah
+                                        File
+                                    </div>
+                                    <!-- Input file -->
+                                    <input
+                                        type="file"
+                                        ref="fileInput"
+                                        class="form-control"
+                                        @change="handleFileChange"
+                                    />
+                                    <div class="form-text">
+                                        * Format JPG, PNG, dengan ukuran kurang
+                                        1 Mb
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal"
+                            @click="clearFormInput"
+                        >
+                            Close
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            <span v-if="btnloading">
+                                <i class="mdi mdi-spin mdi-loading"></i>
+                                Loading...
+                            </span>
+                            <span v-else>
+                                <i class="ri-save-line align-bottom me-1"></i>
+                                Simpan
+                            </span>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\BeritaController;
 use App\Http\Controllers\Api\LinkController;
 use App\Http\Controllers\Api\PengumumanController;
@@ -19,20 +20,22 @@ use App\Http\Controllers\Api\LogoutController;
 use App\Http\Controllers\Api\SintaController;
 
 use App\Http\Controllers\Api\BeritaOperatorController;
+use App\Http\Controllers\Api\CatatanHarianController;
 use App\Http\Controllers\Api\KelompokRabOperatorController;
 use App\Http\Controllers\Api\PengumumanOperatorController;
 use App\Http\Controllers\Api\PanduanOperatorController;
 use App\Http\Controllers\Api\SponsorOperatorController;
 use App\Http\Controllers\Api\TautanOperatorController;
-
+use App\Http\Controllers\Api\SkemaOperatorController;
+use App\Http\Controllers\Api\PerbaikanUsulanController;
 
 Route::get('/formidentitas/{id}', [ProfilPengusulController::class, 'formidentitas']);
-
 
 
 // Membatasi api akses dari luar aplikasi
 Route::middleware('api.access')->group(function () {
     // Home Page
+    Route::get('/home', [HomeController::class, 'index']);
     Route::apiResource('/berita', BeritaController::class)->only(['index', 'show']);
     Route::apiResource('/sponsor', SponsorController::class)->only(['index']);
     Route::apiResource('/pengumuman', PengumumanController::class);
@@ -43,7 +46,6 @@ Route::middleware('api.access')->group(function () {
 
     // Register
     Route::apiResource('/register', RegisterController::class)->only(['store']);
-
     // Login
     Route::post('/login', [LoginController::class, 'login']);
     // Logout
@@ -68,3 +70,16 @@ Route::middleware('api.access')->group(function () {
     // Sponsor Operator
     Route::apiResource('/sponsorform', SponsorOperatorController::class);
 });
+
+// Skema Operator
+Route::get('/skemaform/{tahun}/{kategori}', [SkemaOperatorController::class, 'index']);
+Route::apiResource('/skemaform', SkemaOperatorController::class);
+
+// Perbaikan Usulan Operator
+Route::get('/perbaikanusulan/{tahun}/{kegiatan}', [PerbaikanUsulanController::class, 'PerbaikanUsulan']);
+Route::get('/perbaikanusulandetail/{kode}', [PerbaikanUsulanController::class, 'PerbaikanUsulanDetail']);
+
+// Catatan Harian Operator
+Route::get('/catatanharian/{tahun}/{kegiatan}', [CatatanHarianController::class, 'CatatanHarian']);
+Route::get('/catatanharianlist/{kode}', [CatatanHarianController::class, 'CatatanHarianList']);
+Route::get('/catatanhariandetail/{kode}/{id}', [CatatanHarianController::class, 'CatatanHarianDetail']);

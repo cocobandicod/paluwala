@@ -1,13 +1,16 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { ref, watch, defineEmits } from "vue";
 import api from "../../../api";
 import { showToast } from "../../../utils/globalFunctions";
 
-const route = useRoute();
-const router = useRouter(); // Inisialisasi router
 const isLoading = ref(true);
 const btnloading = ref(false);
+const props = defineProps({
+    dataId: {
+        type: Number,
+        required: true,
+    },
+});
 
 const tautan = ref({
     id: null,
@@ -15,9 +18,11 @@ const tautan = ref({
     link: "",
 });
 
-const detail_tautan = async () => {
+const detail_edit_tautan = async () => {
+    if (!props.dataId) return; // Make sure exists
     try {
-        const response = await api.get(`/api/tautanform/${route.params.id}`);
+        isLoading.value = true;
+        const response = await api.get(`/api/tautanform/${props.dataId}`);
         tautan.value = response.data.data;
     } catch (error) {
         if (error.response && error.response.status === 404) {
@@ -30,7 +35,9 @@ const detail_tautan = async () => {
     }
 };
 
-//method "UPDATE"
+const emit = defineEmits(["refreshTabel"]);
+
+//method "INSERT"
 const update_tautan = async () => {
     btnloading.value = true;
     let formData = new FormData();
@@ -39,9 +46,15 @@ const update_tautan = async () => {
     formData.append("_method", "PATCH");
 
     try {
-        await api.post(`/api/tautanform/${route.params.id}`, formData);
+        await api.post(`/api/tautanform/${props.dataId}`, formData);
         showToast("Data berhasil disimpan", "#4fbe87");
-        router.push({ name: "OperatorTautan" });
+        emit("refreshTabel");
+        // Close modal (optional)
+        const modalElement = document.getElementById("FormTautanEdit");
+        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+        if (modalInstance) {
+            modalInstance.hide();
+        }
     } catch (error) {
         console.error("Error updating data:", error);
         showToast("Gagal menyimpan data", "#ff6b6b");
@@ -50,116 +63,95 @@ const update_tautan = async () => {
     }
 };
 
-onMounted(() => {
-    detail_tautan();
-});
+const clearFormInput = () => {
+    tautan.value = {
+        id: null,
+        judul: "",
+        link: "",
+    };
+};
+
+watch(
+    () => props.dataId,
+    (newId) => {
+        if (newId) {
+            detail_edit_tautan(); // Load data whenever Id changes
+        }
+    }
+);
 </script>
 <template>
-    <div>
-        <div class="main-content">
-            <div class="page-content">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-xl-12">
-                            <div class="card card-height-100">
-                                <div
-                                    class="card-header align-items-center d-flex"
-                                >
-                                    <h4 class="card-title mb-0 flex-grow-1">
-                                        Ubah Tautan
-                                    </h4>
-                                </div>
-                                <!-- end card header -->
-                                <div class="card-body">
-                                    <div
-                                        v-if="isLoading"
-                                        class="d-flex justify-content-center mt-4 mb-4"
-                                    >
-                                        <div
-                                            class="spinner-border"
-                                            role="status"
-                                        >
-                                            <span class="visually-hidden"
-                                                >Loading...</span
-                                            >
-                                        </div>
-                                    </div>
-                                    <div v-else>
-                                        <form @submit.prevent="update_tautan()">
-                                            <div class="row g-4">
-                                                <div class="col-lg-12">
-                                                    <div class="row mb-3">
-                                                        <div class="col-lg-1">
-                                                            <label
-                                                                for="nameInput"
-                                                                class="form-label"
-                                                                >Judul</label
-                                                            >
-                                                        </div>
-                                                        <div class="col-lg-5">
-                                                            <input
-                                                                type="text"
-                                                                class="form-control"
-                                                                v-model="
-                                                                    tautan.judul
-                                                                "
-                                                                required
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-3">
-                                                        <div class="col-lg-1">
-                                                            <label
-                                                                for="nameInput"
-                                                                class="form-label"
-                                                                >Link</label
-                                                            >
-                                                        </div>
-                                                        <div class="col-lg-5">
-                                                            <input
-                                                                type="text"
-                                                                class="form-control"
-                                                                v-model="
-                                                                    tautan.link
-                                                                "
-                                                                required
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="text-start">
-                                                    <button
-                                                        type="submit"
-                                                        class="btn btn-success"
-                                                    >
-                                                        <span v-if="btnloading">
-                                                            <i
-                                                                class="mdi mdi-spin mdi-loading"
-                                                            ></i>
-                                                            Loading...
-                                                        </span>
-                                                        <span v-else>
-                                                            <i
-                                                                class="ri-save-line align-bottom me-1"
-                                                            ></i>
-                                                            Simpan
-                                                        </span>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                        <!--end col-->
-                                    </div>
-                                    <!--end row-->
-                                </div>
-                                <!-- end card body -->
-                            </div>
-                            <!-- end card -->
-                        </div>
-                        <!-- end col -->
-                    </div>
-                    <!-- end row -->
+    <div
+        class="modal fade zoomIn"
+        data-bs-backdrop="static"
+        id="FormTautanEdit"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+        ref="modalRef"
+    >
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header p-3 bg-success-subtle">
+                    <h5 class="modal-title" id="createFolderModalLabel">
+                        Ubah Tautan
+                    </h5>
                 </div>
+                <form @submit.prevent="update_tautan()">
+                    <div class="modal-body">
+                        <div
+                            v-if="isLoading"
+                            class="d-flex justify-content-center mt-4 mb-4"
+                        >
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                        <div v-else>
+                            <div class="row">
+                                <div class="col-lg-12 mb-2">
+                                    <label class="form-label">Judul</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        v-model="tautan.judul"
+                                        required
+                                    />
+                                </div>
+                                <div class="col-lg-12 mb-2">
+                                    <label for="nameInput" class="form-label"
+                                        >Link</label
+                                    >
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        v-model="tautan.link"
+                                        required
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal"
+                        >
+                            Close
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            <span v-if="btnloading">
+                                <i class="mdi mdi-spin mdi-loading"></i>
+                                Loading...
+                            </span>
+                            <span v-else>
+                                <i class="ri-save-line align-bottom me-1"></i>
+                                Simpan
+                            </span>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Api;
+
 use App\Models\Sinta;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -51,7 +52,6 @@ class SintaController extends Controller
             'buku' => $scores3[222],
             'hki' => $scores3[268],
         ]);
-        
     }
 
     public function update(Request $request, $id_user)
@@ -66,12 +66,12 @@ class SintaController extends Controller
             'buku' => 'required',
             'hki' => 'required',
         ]);
-        
+
         //check if validation fails
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
-        
+
         //find post by ID
         //$sinta = Sinta::find($id_user);
         $sinta = Sinta::where('id_user', $id_user)->first();

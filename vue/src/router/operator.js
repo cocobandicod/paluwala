@@ -3,30 +3,20 @@ import OperatorDashboard from '../views/operator/dashboard.vue';
 import OperatorPerbaikanUsulan from '../views/operator/perbaikan_usulan.vue';
 import OperatorPerbaikanUsulanDetail from '../views/operator/perbaikan_usulan_detail.vue';
 import OperatorCatatanHarian from '../views/operator/catatan_harian.vue';
+import OperatorCatatanHarianList from '../views/operator/catatan_harian_list.vue';
+import OperatorCatatanHarianDetail from '../views/operator/catatan_harian_detail.vue';
 
 import OperatorLaporanKemajuan from '../views/operator/perbaikan_usulan.vue';
 import OperatorLaporanAkhir from '../views/operator/perbaikan_usulan.vue';
 import OperatorMonevInternal from '../views/operator/perbaikan_usulan.vue';
 import OperatorProfilLembaga from '../views/operator/profil_lembaga.vue';
 import OperatorRab from '../views/operator/kelompok_rab.vue';
-import OperatorRabEdit from '../views/operator/form/form_kelompok_rab_edit.vue';
-import OperatorRabAdd from '../views/operator/form/form_kelompok_rab_add.vue';
 import OperatorBerita from '../views/operator/berita.vue';
-import OperatorBeritaEdit from '../views/operator/form/form_berita_edit.vue';
-import OperatorBeritaAdd from '../views/operator/form/form_berita_add.vue';
 import OperatorPengumuman from '../views/operator/pengumuman.vue';
-import OperatorPengumumanAdd from '../views/operator/form/form_pengumuman_add.vue';
-import OperatorPengumumanEdit from '../views/operator/form/form_pengumuman_edit.vue';
 import OperatorPanduan from '../views/operator/panduan.vue';
-import OperatorPanduanAdd from '../views/operator/form/form_panduan_add.vue';
-import OperatorPanduanEdit from '../views/operator/form/form_panduan_edit.vue';
 import OperatorTautan from '../views/operator/tautan.vue';
-import OperatorTautanAdd from '../views/operator/form/form_tautan_add.vue';
-import OperatorTautanEdit from '../views/operator/form/form_tautan_edit.vue';
 import OperatorSponsor from '../views/operator/sponsor.vue';
-import OperatorSponsorEdit from '../views/operator/form/form_sponsor_edit.vue';
-import OperatorSponsorAdd from '../views/operator/form/form_sponsor_add.vue';
-
+import OperatorSkema from '../views/operator/skema.vue';
 import OperatorBorangPenilaian from '../views/operator/perbaikan_usulan.vue';
 import OperatorDaftarReviewer from '../views/operator/perbaikan_usulan.vue';
 import OperatorPenugasanReview from '../views/operator/perbaikan_usulan.vue';
@@ -55,7 +45,7 @@ export default [
       }
     },
     {
-      path: '/operator/monitoring/perbaikan-usulan/detail',
+      path: '/operator/monitoring/perbaikan-usulan/:kode',
       name: 'OperatorPerbaikanUsulanDetail',
       component: OperatorPerbaikanUsulanDetail,
       meta: { 
@@ -69,6 +59,24 @@ export default [
       component: OperatorCatatanHarian,
       meta: { 
           title: 'Operator Catatan Harian | Paluwala LPPM Universitas Negeri Gorontalo', 
+          requiresAuth: true // Memerlukan autentikasi
+      }
+    },
+    {
+      path: '/operator/monitoring/catatan-harian/:kode',
+      name: 'OperatorCatatanHarianList',
+      component: OperatorCatatanHarianList,
+      meta: { 
+          title: 'Operator Catatan Harian Detail | Paluwala LPPM Universitas Negeri Gorontalo', 
+          requiresAuth: true // Memerlukan autentikasi
+      }
+    },
+    {
+      path: '/operator/monitoring/catatan-harian/:kode/:id',
+      name: 'OperatorCatatanHarianDetail',
+      component: OperatorCatatanHarianDetail,
+      meta: { 
+          title: 'Operator Catatan Harian Detail | Paluwala LPPM Universitas Negeri Gorontalo', 
           requiresAuth: true // Memerlukan autentikasi
       }
     },
@@ -119,47 +127,11 @@ export default [
       }
     },
     {
-      path: '/operator/pendukung/rab/edit/:id',
-      name: 'OperatorRabEdit',
-      component: OperatorRabEdit,
-      meta: { 
-          title: 'Operator Edit Kelompok RAB | Paluwala LPPM Universitas Negeri Gorontalo', 
-          requiresAuth: true // Memerlukan autentikasi
-      }
-    },
-    {
-      path: '/operator/pendukung/rab/add',
-      name: 'OperatorRabAdd',
-      component: OperatorRabAdd,
-      meta: { 
-          title: 'Operator Tambah Kelompok RAB | Paluwala LPPM Universitas Negeri Gorontalo', 
-          requiresAuth: true // Memerlukan autentikasi
-      }
-    },
-    {
       path: '/operator/pendukung/berita',
       name: 'OperatorBerita',
       component: OperatorBerita,
       meta: { 
           title: 'Operator Berita | Paluwala LPPM Universitas Negeri Gorontalo', 
-          requiresAuth: true // Memerlukan autentikasi
-      }
-    },
-    {
-      path: '/operator/pendukung/berita/add',
-      name: 'OperatorBeritaAdd',
-      component: OperatorBeritaAdd,
-      meta: { 
-          title: 'Operator Tambah Berita | Paluwala LPPM Universitas Negeri Gorontalo', 
-          requiresAuth: true // Memerlukan autentikasi
-      }
-    },
-    {
-      path: '/operator/pendukung/berita/edit/:id',
-      name: 'OperatorBeritaEdit',
-      component: OperatorBeritaEdit,
-      meta: { 
-          title: 'Operator Edit Berita | Paluwala LPPM Universitas Negeri Gorontalo', 
           requiresAuth: true // Memerlukan autentikasi
       }
     },
@@ -173,47 +145,11 @@ export default [
       }
     },
     {
-      path: '/operator/pendukung/pengumuman/add',
-      name: 'OperatorPengumumanAdd',
-      component: OperatorPengumumanAdd,
-      meta: { 
-          title: 'Operator Tambah Pengumuman | Paluwala LPPM Universitas Negeri Gorontalo', 
-          requiresAuth: true // Memerlukan autentikasi
-      }
-    },
-    {
-      path: '/operator/pendukung/pengumuman/edit/:id',
-      name: 'OperatorPengumumanEdit',
-      component: OperatorPengumumanEdit,
-      meta: { 
-          title: 'Operator Edit Pengumuman | Paluwala LPPM Universitas Negeri Gorontalo', 
-          requiresAuth: true // Memerlukan autentikasi
-      }
-    },
-    {
       path: '/operator/pendukung/panduan',
       name: 'OperatorPanduan',
       component: OperatorPanduan,
       meta: { 
           title: 'Operator Panduan | Paluwala LPPM Universitas Negeri Gorontalo', 
-          requiresAuth: true // Memerlukan autentikasi
-      }
-    },
-    {
-      path: '/operator/pendukung/panduan/add',
-      name: 'OperatorPanduanAdd',
-      component: OperatorPanduanAdd,
-      meta: { 
-          title: 'Operator Tambah Panduan | Paluwala LPPM Universitas Negeri Gorontalo', 
-          requiresAuth: true // Memerlukan autentikasi
-      }
-    },
-    {
-      path: '/operator/pendukung/panduan/edit/:id',
-      name: 'OperatorPanduanEdit',
-      component: OperatorPanduanEdit,
-      meta: { 
-          title: 'Operator Edit Panduan | Paluwala LPPM Universitas Negeri Gorontalo', 
           requiresAuth: true // Memerlukan autentikasi
       }
     },
@@ -227,24 +163,6 @@ export default [
       }
     },
     {
-      path: '/operator/pendukung/tautan/add',
-      name: 'OperatorTautanAdd',
-      component: OperatorTautanAdd,
-      meta: { 
-          title: 'Operator Tambah Tautan | Paluwala LPPM Universitas Negeri Gorontalo', 
-          requiresAuth: true // Memerlukan autentikasi
-      }
-    },
-    {
-      path: '/operator/pendukung/tautan/edit/:id',
-      name: 'OperatorTautanEdit',
-      component: OperatorTautanEdit,
-      meta: { 
-          title: 'Operator Edit Tautan | Paluwala LPPM Universitas Negeri Gorontalo', 
-          requiresAuth: true // Memerlukan autentikasi
-      }
-    },
-    {
       path: '/operator/pendukung/sponsor',
       name: 'OperatorSponsor',
       component: OperatorSponsor,
@@ -254,20 +172,11 @@ export default [
       }
     },
     {
-      path: '/operator/pendukung/sponsor/add',
-      name: 'OperatorSponsorAdd',
-      component: OperatorSponsorAdd,
+      path: '/operator/pendukung/skema',
+      name: 'OperatorSkema',
+      component: OperatorSkema,
       meta: { 
-          title: 'Operator Tambah Sponsor | Paluwala LPPM Universitas Negeri Gorontalo', 
-          requiresAuth: true // Memerlukan autentikasi
-      }
-    },
-    {
-      path: '/operator/pendukung/sponsor/edit/:id',
-      name: 'OperatorSponsorEdit',
-      component: OperatorSponsorEdit,
-      meta: { 
-          title: 'Operator Edit Sponsor | Paluwala LPPM Universitas Negeri Gorontalo', 
+          title: 'Operator Skema Penelitian Pengabdian | Paluwala LPPM Universitas Negeri Gorontalo', 
           requiresAuth: true // Memerlukan autentikasi
       }
     },

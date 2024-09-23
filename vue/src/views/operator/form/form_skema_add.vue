@@ -4,27 +4,29 @@ import api from "../../../api";
 import { showToast } from "../../../utils/globalFunctions";
 
 const btnloading = ref(false);
-const panduan = ref({
+const skema = ref({
     id: null,
-    judul_panduan: "",
-    youtube: "",
+    nama_skema: "",
+    tahun: "",
+    kegiatan: "",
 });
 
-const emit = defineEmits(["refreshTabel"]);
+const emit = defineEmits(["refresh"]);
 
 //method "INSERT"
-const add_panduan = async () => {
+const add_skema = async () => {
     btnloading.value = true;
     let formData = new FormData();
-    formData.append("judul_panduan", panduan.value.judul_panduan);
-    formData.append("youtube", panduan.value.youtube);
+    formData.append("nama_skema", skema.value.nama_skema);
+    formData.append("tahun", skema.value.tahun);
+    formData.append("kegiatan", skema.value.kegiatan);
     try {
-        await api.post(`/api/panduanform`, formData);
+        await api.post(`/api/skemaform`, formData);
         showToast("Data berhasil disimpan", "#4fbe87");
-        emit("refreshTabel");
+        emit("refresh");
         clearFormInput();
         // Close modal (optional)
-        const modalElement = document.getElementById("FormPanduanAdd");
+        const modalElement = document.getElementById("FormSkemaAdd");
         const modalInstance = bootstrap.Modal.getInstance(modalElement);
         if (modalInstance) {
             modalInstance.hide();
@@ -38,10 +40,11 @@ const add_panduan = async () => {
 };
 
 const clearFormInput = () => {
-    panduan.value = {
+    skema.value = {
         id: null,
-        judul_panduan: "",
-        youtube: "",
+        nama_skema: "",
+        tahun: "",
+        kegiatan: "",
     };
 };
 </script>
@@ -49,7 +52,7 @@ const clearFormInput = () => {
     <div
         class="modal fade zoomIn"
         data-bs-backdrop="static"
-        id="FormPanduanAdd"
+        id="FormSkemaAdd"
         tabindex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
@@ -59,31 +62,48 @@ const clearFormInput = () => {
             <div class="modal-content">
                 <div class="modal-header p-3 bg-success-subtle">
                     <h5 class="modal-title" id="createFolderModalLabel">
-                        Tambah Panduan
+                        Tambah Skema
                     </h5>
                 </div>
-                <form @submit.prevent="add_panduan()">
+                <form @submit.prevent="add_skema()">
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-lg-12 mb-2">
-                                <label class="form-label">Judul Panduan</label>
+                                <label class="form-label">Nama Skema</label>
                                 <input
                                     type="text"
                                     class="form-control"
-                                    v-model="panduan.judul_panduan"
+                                    v-model="skema.nama_skema"
                                     required
                                 />
                             </div>
-                            <div class="col-lg-12 mb-2">
+                            <div class="col-lg-6 mb-2">
                                 <label for="nameInput" class="form-label"
-                                    >Youtube</label
+                                    >Tahun</label
                                 >
                                 <input
-                                    type="text"
+                                    type="number"
                                     class="form-control"
-                                    v-model="panduan.youtube"
+                                    v-model="skema.tahun"
                                     required
                                 />
+                            </div>
+                            <div class="col-lg-6 mb-2">
+                                <label for="nameInput" class="form-label"
+                                    >Kegiatan</label
+                                >
+                                <select
+                                    class="form-select"
+                                    v-model="skema.kegiatan"
+                                    required
+                                >
+                                    <option value="Penelitian">
+                                        Penelitian
+                                    </option>
+                                    <option value="Pengabdian">
+                                        Pengabdian
+                                    </option>
+                                </select>
                             </div>
                         </div>
                     </div>

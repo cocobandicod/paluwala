@@ -12,18 +12,19 @@ const props = defineProps({
     },
 });
 
-const panduan = ref({
+const skema = ref({
     id: null,
-    judul_panduan: "",
-    youtube: "",
+    nama_skema: "",
+    tahun: "",
+    kegiatan: "",
 });
 
-const detail_edit_panduan = async () => {
+const detail_edit_skema = async () => {
     if (!props.dataId) return; // Make sure exists
     try {
         isLoading.value = true;
-        const response = await api.get(`/api/panduanform/${props.dataId}`);
-        panduan.value = response.data.data;
+        const response = await api.get(`/api/skemaform/${props.dataId}`);
+        skema.value = response.data.data;
     } catch (error) {
         if (error.response && error.response.status === 404) {
             router.push({ name: "NotFound" });
@@ -35,22 +36,23 @@ const detail_edit_panduan = async () => {
     }
 };
 
-const emit = defineEmits(["refreshTabel"]);
+const emit = defineEmits(["refresh"]);
 
 //method "INSERT"
-const update_panduan = async () => {
+const update_skema = async () => {
     btnloading.value = true;
     let formData = new FormData();
-    formData.append("judul_panduan", panduan.value.judul_panduan);
-    formData.append("youtube", panduan.value.youtube);
+    formData.append("nama_skema", skema.value.nama_skema);
+    formData.append("tahun", skema.value.tahun);
+    formData.append("kegiatan", skema.value.kegiatan);
     formData.append("_method", "PATCH");
 
     try {
-        await api.post(`/api/panduanform/${props.dataId}`, formData);
+        await api.post(`/api/skemaform/${props.dataId}`, formData);
         showToast("Data berhasil disimpan", "#4fbe87");
-        emit("refreshTabel");
+        emit("refresh");
         // Close modal (optional)
-        const modalElement = document.getElementById("FormPanduanEdit");
+        const modalElement = document.getElementById("FormSkemaEdit");
         const modalInstance = bootstrap.Modal.getInstance(modalElement);
         if (modalInstance) {
             modalInstance.hide();
@@ -64,10 +66,11 @@ const update_panduan = async () => {
 };
 
 const clearFormInput = () => {
-    panduan.value = {
+    skema.value = {
         id: null,
-        judul_panduan: "",
-        youtube: "",
+        nama_skema: "",
+        tahun: "",
+        kegiatan: "",
     };
 };
 
@@ -75,7 +78,7 @@ watch(
     () => props.dataId,
     (newId) => {
         if (newId) {
-            detail_edit_panduan(); // Load data whenever Id changes
+            detail_edit_skema(); // Load data whenever Id changes
         }
     }
 );
@@ -84,7 +87,7 @@ watch(
     <div
         class="modal fade zoomIn"
         data-bs-backdrop="static"
-        id="FormPanduanEdit"
+        id="FormSkemaEdit"
         tabindex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
@@ -94,10 +97,10 @@ watch(
             <div class="modal-content">
                 <div class="modal-header p-3 bg-success-subtle">
                     <h5 class="modal-title" id="createFolderModalLabel">
-                        Ubah panduan
+                        Ubah Skema
                     </h5>
                 </div>
-                <form @submit.prevent="update_panduan()">
+                <form @submit.prevent="update_skema()">
                     <div class="modal-body">
                         <div
                             v-if="isLoading"
@@ -110,26 +113,41 @@ watch(
                         <div v-else>
                             <div class="row">
                                 <div class="col-lg-12 mb-2">
-                                    <label class="form-label"
-                                        >Judul Panduan</label
-                                    >
+                                    <label class="form-label">Nama Skema</label>
                                     <input
                                         type="text"
                                         class="form-control"
-                                        v-model="panduan.judul_panduan"
+                                        v-model="skema.nama_skema"
                                         required
                                     />
                                 </div>
-                                <div class="col-lg-12 mb-2">
+                                <div class="col-lg-6 mb-2">
                                     <label for="nameInput" class="form-label"
-                                        >Youtube</label
+                                        >Tahun</label
                                     >
                                     <input
-                                        type="text"
+                                        type="number"
                                         class="form-control"
-                                        v-model="panduan.youtube"
+                                        v-model="skema.tahun"
                                         required
                                     />
+                                </div>
+                                <div class="col-lg-6 mb-2">
+                                    <label for="nameInput" class="form-label"
+                                        >Kegiatan</label
+                                    >
+                                    <select
+                                        class="form-select"
+                                        v-model="skema.kegiatan"
+                                        required
+                                    >
+                                        <option value="Penelitian">
+                                            Penelitian
+                                        </option>
+                                        <option value="Pengabdian">
+                                            Pengabdian
+                                        </option>
+                                    </select>
                                 </div>
                             </div>
                         </div>

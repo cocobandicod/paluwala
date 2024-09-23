@@ -74,9 +74,10 @@ onMounted(() => {
                                     ></i>
                                     {{ berita.user.name }}
                                 </p>
-                                <p class="text-muted my-3 ff-secondary">
-                                    {{ berita.isi_berita }}
-                                </p>
+                                <p
+                                    class="my-3 ff-secondary"
+                                    v-html="berita.isi_berita"
+                                ></p>
                             </div>
                         </div>
                     </div>

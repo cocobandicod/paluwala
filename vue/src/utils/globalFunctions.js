@@ -95,3 +95,9 @@ export const confirmDelete = async (title = 'Apakah kamu yakin?', text = 'Data i
       cancelButtonText: 'Batal',
     });
   };
+
+  export const stripHtmlTags = (html) => {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    return tempDiv.textContent || tempDiv.innerText || "";
+};

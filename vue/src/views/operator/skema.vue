@@ -4,46 +4,43 @@ import api from "../../api";
 import "datatables.net-bs5";
 import $ from "jquery";
 import { showToast, confirmDelete } from "../../utils/globalFunctions";
-import FormBeritaAdd from "./form/form_berita_add.vue";
-import FormBeritaEdit from "./form/form_berita_edit.vue";
+import FormSkemaAdd from "./form/form_skema_add.vue";
+import FormSkemaEdit from "./form/form_skema_edit.vue";
 
 const isLoading = ref(true);
-const berita = ref([]);
+const skema = ref([]);
+const pilkegiatan = ref("Penelitian");
+const piltahun = ref("2024");
 const selectedId = ref(0);
 
 const edit_data = (id) => {
     selectedId.value = id;
 };
 
-const detailberita = async () => {
+// Function to fetch data based on selected category and year
+const detail_skema = async () => {
     try {
-        if ($.fn.DataTable.isDataTable("#DTableBerita")) {
-            $("#DTableBerita").DataTable().destroy();
+        // Check if DataTable is already initialized, destroy it if exists
+        if ($.fn.DataTable.isDataTable("#DTableSkema")) {
+            $("#DTableSkema").DataTable().destroy();
         }
         // Re-initialize DataTable after data is loaded
         initializeDataTable();
-        isLoading.value = true;
-        const response = await api.get("/api/beritaform");
-        berita.value = response.data.data;
+        isLoading.value = true; // Set loading to true before fetching
+        const response = await api.get(
+            `/api/skemaform/${piltahun.value}/${pilkegiatan.value}`
+        );
+        skema.value = response.data.data;
     } catch (error) {
         console.error("Error fetching data:", error);
     } finally {
-        isLoading.value = false;
+        isLoading.value = false; // Set loading to false after fetching
     }
 };
 
-onMounted(async () => {
-    await detailberita();
-    initializeDataTable();
-});
-
-const refreshDataTable = async () => {
-    await detailberita();
-    initializeDataTable();
-};
-
+// Function to initialize DataTable
 const initializeDataTable = () => {
-    $("#DTableBerita").DataTable({
+    $("#DTableSkema").DataTable({
         stateSave: true,
         autoWidth: true,
         processing: true,
@@ -53,11 +50,16 @@ const initializeDataTable = () => {
             {
                 className: "text-center p-2",
                 width: "3%",
-                targets: [0, 3],
+                targets: [0, 4],
+            },
+            {
+                className: "text-center p-2",
+                width: "10%",
+                targets: [2],
             },
             {
                 className: "p-2",
-                targets: [0, 1, 2, 3],
+                targets: [0, 1, 2, 3, 4],
             },
         ],
         language: {
@@ -76,18 +78,35 @@ const initializeDataTable = () => {
     });
 };
 
-const delete_berita = async (id, nama) => {
+// Combined function for handling both category and year changes
+const pilih_kategori_dan_tahun = async () => {
+    await detail_skema(); // Fetch data based on new selections
+    initializeDataTable();
+};
+
+// Fetch initial data when component is mounted
+onMounted(async () => {
+    await detail_skema();
+    initializeDataTable(); // Initialize the data table after fetching
+});
+
+const refreshDataTable = async () => {
+    await detail_skema();
+    initializeDataTable();
+};
+
+const hapus_data = async (id, nama) => {
     // Tampilkan dialog konfirmasi menggunakan SweetAlert
     const result = await confirmDelete("Menghapus data ini?", nama);
 
     // Jika pengguna mengonfirmasi penghapusan
     if (result.isConfirmed) {
         try {
-            // Hapus berita dari database
-            await api.delete(`/api/beritaform/${id}`);
-            await detailberita(); // Refresh data berita setelah penghapusan
-            // Tampilkan toast sukses
+            // Hapus dari database
+            await api.delete(`/api/skemaform/${id}`);
+            await detail_skema(); // Refresh data setelah penghapusan
             initializeDataTable();
+            // Tampilkan toast sukses
             showToast("Data berhasil dihapus", "#4fbe87");
         } catch (error) {
             console.error("Error delete data:", error);
@@ -109,22 +128,80 @@ const delete_berita = async (id, nama) => {
                                     class="card-header align-items-center d-flex"
                                 >
                                     <h4 class="card-title mb-0 flex-grow-1">
-                                        Berita
+                                        Skema Penelitian Pengabdian
                                     </h4>
                                 </div>
                                 <!-- end card header -->
                                 <div class="card-body">
-                                    <button
-                                        type="button"
-                                        class="btn btn-success mb-2"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#FormBeritaAdd"
-                                    >
-                                        <i
-                                            class="ri-add-circle-line align-bottom me-1"
-                                        ></i>
-                                        Berita
-                                    </button>
+                                    <div class="row">
+                                        <div class="col-sm-auto">
+                                            <div>
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-success mb-2"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#FormSkemaAdd"
+                                                >
+                                                    <i
+                                                        class="ri-add-circle-line align-bottom me-1"
+                                                    ></i>
+                                                    Skema
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm">
+                                            <div
+                                                class="d-flex justify-content-sm-end"
+                                            >
+                                                <div class="search-box ms-0">
+                                                    <label
+                                                        for="labelInput"
+                                                        class="form-label"
+                                                        >Jenis Kegiatan</label
+                                                    >
+                                                    <select
+                                                        v-model="pilkegiatan"
+                                                        class="form-select"
+                                                        @change.prevent="
+                                                            pilih_kategori_dan_tahun()
+                                                        "
+                                                    >
+                                                        <option
+                                                            value="Penelitian"
+                                                        >
+                                                            Penelitian
+                                                        </option>
+                                                        <option
+                                                            value="Pengabdian"
+                                                        >
+                                                            Pengabdian
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div class="search-box ms-2">
+                                                    <label
+                                                        for="labelInput"
+                                                        class="form-label"
+                                                        >Tahun</label
+                                                    >
+                                                    <select
+                                                        v-model="piltahun"
+                                                        class="form-select"
+                                                        @change.prevent="
+                                                            pilih_kategori_dan_tahun()
+                                                        "
+                                                    >
+                                                        <option value="2024">
+                                                            2024
+                                                        </option>
+                                                        <option value="2023">
+                                                            2023
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div
                                         v-if="isLoading"
                                         class="d-flex justify-content-center mt-4 mb-4"
@@ -138,23 +215,20 @@ const delete_berita = async (id, nama) => {
                                             >
                                         </div>
                                     </div>
-                                    <div v-else>
+                                    <div v-else class="mt-3">
                                         <div class="row">
                                             <div class="table-responsive">
                                                 <table
-                                                    id="DTableBerita"
+                                                    id="DTableSkema"
                                                     class="table table-bordered dt-responsive table-striped align-middle fs-12 mb-0"
                                                     style="width: 100%"
                                                 >
                                                     <thead class="table-light">
                                                         <tr>
                                                             <th>No</th>
-                                                            <th>
-                                                                Tanggal Berita
-                                                            </th>
-                                                            <th>
-                                                                Judul Berita
-                                                            </th>
+                                                            <th>Nama Skema</th>
+                                                            <th>Tahun</th>
+                                                            <th>Kegiatan</th>
                                                             <th>Action</th>
                                                         </tr>
                                                     </thead>
@@ -162,7 +236,7 @@ const delete_berita = async (id, nama) => {
                                                         <tr
                                                             v-for="(
                                                                 item, index
-                                                            ) in berita"
+                                                            ) in skema"
                                                             :key="index"
                                                         >
                                                             <td>
@@ -170,12 +244,15 @@ const delete_berita = async (id, nama) => {
                                                             </td>
                                                             <td>
                                                                 {{
-                                                                    item.tgl_berita
+                                                                    item.nama_skema
                                                                 }}
                                                             </td>
                                                             <td>
+                                                                {{ item.tahun }}
+                                                            </td>
+                                                            <td>
                                                                 {{
-                                                                    item.judul_berita
+                                                                    item.kegiatan
                                                                 }}
                                                             </td>
                                                             <td>
@@ -200,7 +277,7 @@ const delete_berita = async (id, nama) => {
                                                                             <button
                                                                                 class="dropdown-item"
                                                                                 data-bs-toggle="modal"
-                                                                                data-bs-target="#FormBeritaEdit"
+                                                                                data-bs-target="#FormSkemaEdit"
                                                                                 @click="
                                                                                     edit_data(
                                                                                         item.id
@@ -217,9 +294,9 @@ const delete_berita = async (id, nama) => {
                                                                             <button
                                                                                 class="dropdown-item"
                                                                                 @click.prevent="
-                                                                                    delete_berita(
+                                                                                    hapus_data(
                                                                                         item.id,
-                                                                                        item.judul_berita
+                                                                                        item.judul
                                                                                     )
                                                                                 "
                                                                             >
@@ -251,7 +328,7 @@ const delete_berita = async (id, nama) => {
             </div>
         </div>
     </div>
-    <FormBeritaAdd @refreshTabel="refreshDataTable" />
-    <FormBeritaEdit :dataId="selectedId" @refreshTabel="refreshDataTable" />
+    <FormSkemaAdd @refresh="refreshDataTable" />
+    <FormSkemaEdit :dataId="selectedId" @refresh="refreshDataTable" />
 </template>
 <style lang=""></style>

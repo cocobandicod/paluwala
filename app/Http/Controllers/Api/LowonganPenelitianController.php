@@ -79,6 +79,12 @@ class LowonganPenelitianController extends Controller
         //find post by ID
         $post = LowonganPenelitian::find($id);
 
+        if (!$post) {
+            return response()->json([
+                'message' => 'Data tidak ditemukan'
+            ], 404); // Return 404 error if berita not found
+        }
+
         //return single post as a resource
         return new PostResource(true, 'Detail Data Post!', $post);
     }

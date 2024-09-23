@@ -3,17 +3,26 @@ import { ref, onMounted } from "vue";
 import api from "../../api";
 import "datatables.net-bs5";
 import $ from "jquery";
-import {
-    showToast,
-    showAlert,
-    confirmDelete,
-} from "../../utils/globalFunctions";
+import { showToast, confirmDelete } from "../../utils/globalFunctions";
+import FormTautanAdd from "./form/form_tautan_add.vue";
+import FormTautanEdit from "./form/form_tautan_edit.vue";
 
 const isLoading = ref(true);
 const tautan = ref([]);
+const selectedId = ref(0);
+
+const edit_data = (id) => {
+    selectedId.value = id;
+};
 
 const detail_tautan = async () => {
     try {
+        if ($.fn.DataTable.isDataTable("#DTableTautan")) {
+            $("#DTableTautan").DataTable().destroy();
+        }
+        // Re-initialize DataTable after data is loaded
+        initializeDataTable();
+        isLoading.value = true; // Set loading to true before fetching
         const response = await api.get("/api/tautanform");
         tautan.value = response.data.data;
     } catch (error) {
@@ -28,43 +37,46 @@ onMounted(async () => {
     initializeDataTable();
 });
 
+const refreshDataTable = async () => {
+    await detail_tautan();
+    initializeDataTable();
+};
+
 const initializeDataTable = () => {
-    $(document).ready(function () {
-        $("#DTable1").DataTable({
-            stateSave: true,
-            autoWidth: true,
-            processing: true,
-            ordering: false,
-            responsive: true,
-            columnDefs: [
-                {
-                    className: "text-center p-2",
-                    width: "3%",
-                    targets: [0, 3],
-                },
-                {
-                    className: "p-2",
-                    targets: [0, 1, 2, 3],
-                },
-            ],
-            language: {
-                processing:
-                    '<span><i class="mdi mdi-spin mdi-loading me-1"></i> Memuat Data..</span>',
-                search: "<div class='fs-13'>Pencarian</div> _INPUT_",
-                searchPlaceholder: "Masukan Kata Kunci",
-                lengthMenu: "<div class='fs-13'>Tampilkan</div> _MENU_",
-                info: "<div class='fs-13'>Menampilkan _START_ sampai _END_ dari _TOTAL_ entri</div>",
-                zeroRecords: "Tidak ada data yang ditemukan",
-                infoEmpty:
-                    "<div class='fs-13'>Menampilkan 0 sampai 0 dari 0 entri</div>",
-                infoFiltered:
-                    "<div class='fs-13'>(disaring dari total _MAX_ entri)</div>",
+    $("#DTableTautan").DataTable({
+        stateSave: true,
+        autoWidth: true,
+        processing: true,
+        ordering: false,
+        responsive: true,
+        columnDefs: [
+            {
+                className: "text-center p-2",
+                width: "3%",
+                targets: [0, 3],
             },
-        });
+            {
+                className: "p-2",
+                targets: [0, 1, 2, 3],
+            },
+        ],
+        language: {
+            processing:
+                '<span><i class="mdi mdi-spin mdi-loading me-1"></i> Memuat Data..</span>',
+            search: "<div class='fs-13'>Pencarian</div> _INPUT_",
+            searchPlaceholder: "Masukan Kata Kunci",
+            lengthMenu: "<div class='fs-13'>Tampilkan</div> _MENU_",
+            info: "<div class='fs-13'>Menampilkan _START_ sampai _END_ dari _TOTAL_ entri</div>",
+            zeroRecords: "Tidak ada data yang ditemukan",
+            infoEmpty:
+                "<div class='fs-13'>Menampilkan 0 sampai 0 dari 0 entri</div>",
+            infoFiltered:
+                "<div class='fs-13'>(disaring dari total _MAX_ entri)</div>",
+        },
     });
 };
 
-const delete_tautan = async (id, nama) => {
+const hapus_data = async (id, nama) => {
     // Tampilkan dialog konfirmasi menggunakan SweetAlert
     const result = await confirmDelete("Menghapus data ini?", nama);
 
@@ -74,6 +86,7 @@ const delete_tautan = async (id, nama) => {
             // Hapus dari database
             await api.delete(`/api/tautanform/${id}`);
             await detail_tautan(); // Refresh data setelah penghapusan
+            initializeDataTable();
             // Tampilkan toast sukses
             showToast("Data berhasil dihapus", "#4fbe87");
         } catch (error) {
@@ -101,6 +114,19 @@ const delete_tautan = async (id, nama) => {
                                 </div>
                                 <!-- end card header -->
                                 <div class="card-body">
+                                    <div>
+                                        <button
+                                            type="button"
+                                            class="btn btn-success mb-2"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#FormTautanAdd"
+                                        >
+                                            <i
+                                                class="ri-add-circle-line align-bottom me-1"
+                                            ></i>
+                                            Tautan
+                                        </button>
+                                    </div>
                                     <div
                                         v-if="isLoading"
                                         class="d-flex justify-content-center mt-4 mb-4"
@@ -115,20 +141,8 @@ const delete_tautan = async (id, nama) => {
                                         </div>
                                     </div>
                                     <div v-else>
-                                        <router-link
-                                            type="button"
-                                            class="btn btn-success mb-3"
-                                            :to="{
-                                                name: 'OperatorTautanAdd',
-                                            }"
-                                        >
-                                            <i
-                                                class="ri-add-circle-line align-bottom me-1"
-                                            ></i>
-                                            Tautan
-                                        </router-link>
                                         <table
-                                            id="DTable1"
+                                            id="DTableTautan"
                                             class="table table-bordered dt-responsive table-striped align-middle fs-12 mb-0"
                                             style="width: 100%"
                                         >
@@ -171,26 +185,27 @@ const delete_tautan = async (id, nama) => {
                                                                 aria-labelledby="dropdownMenuLink"
                                                             >
                                                                 <li>
-                                                                    <router-link
+                                                                    <button
                                                                         class="dropdown-item"
-                                                                        :to="{
-                                                                            name: 'OperatorTautanEdit',
-                                                                            params: {
-                                                                                id: item.id,
-                                                                            },
-                                                                        }"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#FormTautanEdit"
+                                                                        @click="
+                                                                            edit_data(
+                                                                                item.id
+                                                                            )
+                                                                        "
                                                                     >
                                                                         <i
                                                                             class="ri-pencil-fill align-bottom me-2 text-muted"
                                                                         ></i>
                                                                         Ubah
-                                                                    </router-link>
+                                                                    </button>
                                                                 </li>
                                                                 <li>
                                                                     <button
                                                                         class="dropdown-item"
                                                                         @click.prevent="
-                                                                            delete_tautan(
+                                                                            hapus_data(
                                                                                 item.id,
                                                                                 item.judul
                                                                             )
@@ -222,5 +237,7 @@ const delete_tautan = async (id, nama) => {
             </div>
         </div>
     </div>
+    <FormTautanAdd @refreshTabel="refreshDataTable" />
+    <FormTautanEdit :dataId="selectedId" @refreshTabel="refreshDataTable" />
 </template>
 <style lang=""></style>

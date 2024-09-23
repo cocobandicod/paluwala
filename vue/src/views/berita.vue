@@ -1,7 +1,11 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import api from "../api";
-import { formatTanggalsaja, truncateText } from "../utils/globalFunctions";
+import {
+    formatTanggalsaja,
+    truncateText,
+    stripHtmlTags,
+} from "../utils/globalFunctions";
 import GlobalFooter from "../components/footer.vue";
 
 const berita = ref([]);
@@ -133,7 +137,11 @@ const goToPrevPage = () => {
                                     {{ item.user.name }}
                                 </p>
                                 <p class="text-muted my-3 ff-secondary">
-                                    {{ truncateText(item.isi_berita, 200) }}
+                                    {{
+                                        stripHtmlTags(
+                                            truncateText(item.isi_berita, 200)
+                                        )
+                                    }}
                                 </p>
 
                                 <div>

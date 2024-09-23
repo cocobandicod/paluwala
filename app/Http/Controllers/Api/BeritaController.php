@@ -28,6 +28,13 @@ class BeritaController extends Controller
     {
         // Find post by slug
         $berita = Berita::with('user')->where('judul_seo', $slug)->firstOrFail();
+
+        if (!$berita) {
+            return response()->json([
+                'message' => 'Data tidak ditemukan'
+            ], 404);
+        }
+
         // Return single post as a resource
         return new PostResource(true, 'Detail Data!', $berita);
     }

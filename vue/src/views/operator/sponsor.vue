@@ -3,17 +3,27 @@ import { ref, onMounted } from "vue";
 import api from "../../api";
 import "datatables.net-bs5";
 import $ from "jquery";
-import {
-    showToast,
-    showAlert,
-    confirmDelete,
-} from "../../utils/globalFunctions";
+import { showToast, confirmDelete } from "../../utils/globalFunctions";
+import FormSponsorAdd from "./form/form_sponsor_add.vue";
+import FormSponsorEdit from "./form/form_sponsor_edit.vue";
 
 const isLoading = ref(true);
 const sponsor = ref([]);
+const selectedId = ref(0);
+
+const edit_data = (id) => {
+    selectedId.value = id;
+};
 
 const detailsponsor = async () => {
     try {
+        // Check if DataTable is already initialized, destroy it if exists
+        if ($.fn.DataTable.isDataTable("#DTable1")) {
+            $("#DTable1").DataTable().destroy();
+        }
+        // Re-initialize DataTable after data is loaded
+        initializeDataTable();
+        isLoading.value = true; // Set loading to true before fetching
         const response = await api.get("/api/sponsorform");
         sponsor.value = response.data.data;
     } catch (error) {
@@ -28,39 +38,42 @@ onMounted(async () => {
     initializeDataTable();
 });
 
+const refreshDataTable = async () => {
+    await detailsponsor();
+    initializeDataTable();
+};
+
 const initializeDataTable = () => {
-    $(document).ready(function () {
-        $("#DTable1").DataTable({
-            stateSave: true,
-            autoWidth: true,
-            processing: true,
-            ordering: false,
-            responsive: true,
-            columnDefs: [
-                {
-                    className: "text-center p-2",
-                    width: "3%",
-                    targets: [0, 3],
-                },
-                {
-                    className: "p-2",
-                    targets: [0, 1, 2, 3],
-                },
-            ],
-            language: {
-                processing:
-                    '<span><i class="mdi mdi-spin mdi-loading me-1"></i> Memuat Data..</span>',
-                search: "<div class='fs-13'>Pencarian</div> _INPUT_",
-                searchPlaceholder: "Masukan Kata Kunci",
-                lengthMenu: "<div class='fs-13'>Tampilkan</div> _MENU_",
-                info: "<div class='fs-13'>Menampilkan _START_ sampai _END_ dari _TOTAL_ entri</div>",
-                zeroRecords: "Tidak ada data yang ditemukan",
-                infoEmpty:
-                    "<div class='fs-13'>Menampilkan 0 sampai 0 dari 0 entri</div>",
-                infoFiltered:
-                    "<div class='fs-13'>(disaring dari total _MAX_ entri)</div>",
+    $("#DTable1").DataTable({
+        stateSave: true,
+        autoWidth: true,
+        processing: true,
+        ordering: false,
+        responsive: true,
+        columnDefs: [
+            {
+                className: "text-center p-2",
+                width: "3%",
+                targets: [0, 3],
             },
-        });
+            {
+                className: "p-2",
+                targets: [0, 1, 2, 3],
+            },
+        ],
+        language: {
+            processing:
+                '<span><i class="mdi mdi-spin mdi-loading me-1"></i> Memuat Data..</span>',
+            search: "<div class='fs-13'>Pencarian</div> _INPUT_",
+            searchPlaceholder: "Masukan Kata Kunci",
+            lengthMenu: "<div class='fs-13'>Tampilkan</div> _MENU_",
+            info: "<div class='fs-13'>Menampilkan _START_ sampai _END_ dari _TOTAL_ entri</div>",
+            zeroRecords: "Tidak ada data yang ditemukan",
+            infoEmpty:
+                "<div class='fs-13'>Menampilkan 0 sampai 0 dari 0 entri</div>",
+            infoFiltered:
+                "<div class='fs-13'>(disaring dari total _MAX_ entri)</div>",
+        },
     });
 };
 
@@ -74,6 +87,7 @@ const delete_sponsor = async (id, nama) => {
             // Hapus sponsor dari database
             await api.delete(`/api/sponsorform/${id}`);
             await detailsponsor(); // Refresh data sponsor setelah penghapusan
+            initializeDataTable();
             // Tampilkan toast sukses
             showToast("Data berhasil dihapus", "#4fbe87");
         } catch (error) {
@@ -101,6 +115,19 @@ const delete_sponsor = async (id, nama) => {
                                 </div>
                                 <!-- end card header -->
                                 <div class="card-body">
+                                    <div>
+                                        <button
+                                            type="button"
+                                            class="btn btn-success mb-2"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#FormSponsorAdd"
+                                        >
+                                            <i
+                                                class="ri-add-circle-line align-bottom me-1"
+                                            ></i>
+                                            Sponsor
+                                        </button>
+                                    </div>
                                     <div
                                         v-if="isLoading"
                                         class="d-flex justify-content-center mt-4 mb-4"
@@ -115,107 +142,106 @@ const delete_sponsor = async (id, nama) => {
                                         </div>
                                     </div>
                                     <div v-else>
-                                        <router-link
-                                            type="button"
-                                            class="btn btn-success mb-3"
-                                            :to="{ name: 'OperatorSponsorAdd' }"
-                                        >
-                                            <i
-                                                class="ri-add-circle-line align-bottom me-1"
-                                            ></i>
-                                            Sponsor
-                                        </router-link>
-                                        <table
-                                            id="DTable1"
-                                            class="table table-bordered dt-responsive table-striped align-middle fs-12 mb-0"
-                                            style="width: 100%"
-                                        >
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th>No</th>
-                                                    <th>Judul</th>
-                                                    <th>Gambar</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr
-                                                    v-for="(
-                                                        item, index
-                                                    ) in sponsor"
-                                                    :key="index"
+                                        <div class="row">
+                                            <div class="table-responsive">
+                                                <table
+                                                    id="DTable1"
+                                                    class="table table-bordered dt-responsive table-striped align-middle fs-12 mb-0"
+                                                    style="width: 100%"
                                                 >
-                                                    <td>{{ index + 1 }}</td>
-                                                    <td>
-                                                        {{ item.judul }}
-                                                    </td>
-                                                    <td>
-                                                        <div
-                                                            class="client-images"
+                                                    <thead class="table-light">
+                                                        <tr>
+                                                            <th>No</th>
+                                                            <th>Judul</th>
+                                                            <th>Gambar</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr
+                                                            v-for="(
+                                                                item, index
+                                                            ) in sponsor"
+                                                            :key="index"
                                                         >
-                                                            <img
-                                                                :src="
-                                                                    item.image
-                                                                "
-                                                                alt=""
-                                                                class="mx-auto img-fluid d-block"
-                                                            />
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="dropdown">
-                                                            <span
-                                                                class="btn btn-soft-secondary btn-sm dropdown"
-                                                                id="dropdownMenuLink"
-                                                                data-bs-toggle="dropdown"
-                                                                aria-expanded="false"
-                                                            >
-                                                                <i
-                                                                    class="ri-more-2-fill"
-                                                                ></i>
-                                                            </span>
-                                                            <ul
-                                                                class="dropdown-menu"
-                                                                aria-labelledby="dropdownMenuLink"
-                                                            >
-                                                                <li>
-                                                                    <router-link
-                                                                        class="dropdown-item"
-                                                                        :to="{
-                                                                            name: 'OperatorSponsorEdit',
-                                                                            params: {
-                                                                                id: item.id,
-                                                                            },
-                                                                        }"
-                                                                    >
-                                                                        <i
-                                                                            class="ri-pencil-fill align-bottom me-2 text-muted"
-                                                                        ></i>
-                                                                        Ubah
-                                                                    </router-link>
-                                                                </li>
-                                                                <li>
-                                                                    <button
-                                                                        class="dropdown-item"
-                                                                        @click.prevent="
-                                                                            delete_sponsor(
-                                                                                item.id,
-                                                                                item.judul
-                                                                            )
+                                                            <td>
+                                                                {{ index + 1 }}
+                                                            </td>
+                                                            <td>
+                                                                {{ item.judul }}
+                                                            </td>
+                                                            <td>
+                                                                <div
+                                                                    class="client-images"
+                                                                >
+                                                                    <img
+                                                                        :src="
+                                                                            item.image
                                                                         "
+                                                                        alt=""
+                                                                        class="mx-auto img-fluid d-block"
+                                                                    />
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div
+                                                                    class="dropdown"
+                                                                >
+                                                                    <span
+                                                                        class="btn btn-soft-secondary btn-sm dropdown"
+                                                                        id="dropdownMenuLink"
+                                                                        data-bs-toggle="dropdown"
+                                                                        aria-expanded="false"
                                                                     >
                                                                         <i
-                                                                            class="ri-delete-bin-fill align-bottom me-2 text-muted"
+                                                                            class="ri-more-2-fill"
                                                                         ></i>
-                                                                        Hapus
-                                                                    </button>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                                                    </span>
+                                                                    <ul
+                                                                        class="dropdown-menu"
+                                                                        aria-labelledby="dropdownMenuLink"
+                                                                    >
+                                                                        <li>
+                                                                            <button
+                                                                                class="dropdown-item"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#FormSponsorEdit"
+                                                                                @click="
+                                                                                    edit_data(
+                                                                                        item.id
+                                                                                    )
+                                                                                "
+                                                                            >
+                                                                                <i
+                                                                                    class="ri-pencil-fill align-bottom me-2 text-muted"
+                                                                                ></i>
+                                                                                Ubah
+                                                                            </button>
+                                                                        </li>
+                                                                        <li>
+                                                                            <button
+                                                                                class="dropdown-item"
+                                                                                @click.prevent="
+                                                                                    delete_sponsor(
+                                                                                        item.id,
+                                                                                        item.judul
+                                                                                    )
+                                                                                "
+                                                                            >
+                                                                                <i
+                                                                                    class="ri-delete-bin-fill align-bottom me-2 text-muted"
+                                                                                ></i>
+                                                                                Hapus
+                                                                            </button>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </div>
                                     <!--end row-->
                                 </div>
@@ -230,5 +256,7 @@ const delete_sponsor = async (id, nama) => {
             </div>
         </div>
     </div>
+    <FormSponsorAdd @refreshTabel="refreshDataTable" />
+    <FormSponsorEdit :dataId="selectedId" @refreshTabel="refreshDataTable" />
 </template>
 <style lang=""></style>

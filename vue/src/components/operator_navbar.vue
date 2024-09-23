@@ -220,6 +220,16 @@ import GlobalHeader from "../components/operator_header.vue";
                                             Sponsor
                                         </router-link>
                                     </li>
+                                    <li class="nav-item">
+                                        <router-link
+                                            :to="{
+                                                name: 'OperatorSkema',
+                                            }"
+                                            class="nav-link"
+                                        >
+                                            Skema
+                                        </router-link>
+                                    </li>
                                 </ul>
                             </div>
                         </li>
